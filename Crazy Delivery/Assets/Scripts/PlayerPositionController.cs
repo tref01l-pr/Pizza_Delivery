@@ -28,7 +28,7 @@ public class PlayerPositionController : MonoBehaviour
         TeleportPlayerOnDestination();
     }
     
-    private void Update()
+    private void FixedUpdate()
     {
         if (isRiding == false)
         {

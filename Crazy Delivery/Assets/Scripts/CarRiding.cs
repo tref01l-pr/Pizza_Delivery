@@ -12,7 +12,7 @@ public class CarRiding : MonoBehaviour
         _trafficSpawnerAndDestroyer = transform.parent.GetComponent<TrafficSpawnerAndDestroyer>();
     }
     
-    void Update()
+    void FixedUpdate()
     {
         transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.speedOfCarRidingForCarRiding * Time.deltaTime;
     }

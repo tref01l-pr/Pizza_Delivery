@@ -46,9 +46,8 @@ public class PizzaThrowing : MonoBehaviour
         pizzaSightMeshRenderer.enabled = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        
         if (OnDestination)
         {
             SightRotation();
@@ -69,7 +68,6 @@ public class PizzaThrowing : MonoBehaviour
                 EndPizzaThrowing();
             }
         }
-        
     }
     
 
