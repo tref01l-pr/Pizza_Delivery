@@ -46,7 +46,7 @@ public class PizzaThrowing : MonoBehaviour
         pizzaSightMeshRenderer.enabled = false;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (OnDestination)
         {
@@ -56,16 +56,22 @@ public class PizzaThrowing : MonoBehaviour
             {
                 GetInput();
             }
-            
-            if (isPizza)
-            {
-                PizzaFly();
-            }
-            
+       
             if (numberOfClients == 0 || numberOfThrowingChance < 0)
             {
                 _playerPositionController.isRiding = true;
                 EndPizzaThrowing();
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (OnDestination)
+        {
+            if (isPizza)
+            {
+                PizzaFly();
             }
         }
     }

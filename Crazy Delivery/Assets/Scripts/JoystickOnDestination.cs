@@ -13,7 +13,7 @@ public class JoystickOnDestination : MonoBehaviour
         joystickImage = GetComponent<Image>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (_playerPositionController.isRiding)
         {

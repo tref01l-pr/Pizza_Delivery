@@ -35,7 +35,7 @@ public class TrafficSpawnerAndDestroyer : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (canSpawn)
         {
