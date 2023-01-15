@@ -1,13 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class TrafficSpawnerAndDestroyer : MonoBehaviour
 {
-    [HideInInspector] public float speedOfCarRidingForCarRiding { get; set; }
+    public float speedOfCarRidingForCarRiding { get; set; }
     
     [SerializeField] private List<GameObject> trafficPreffabs;
     private GameObject car;

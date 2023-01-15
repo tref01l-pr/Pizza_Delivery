@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    [HideInInspector] public int score { get; set; }
+    public int score { get; set; }
 
     [SerializeField] private Text scoreText;
     

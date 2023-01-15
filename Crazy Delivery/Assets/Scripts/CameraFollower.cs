@@ -20,7 +20,7 @@ public class CameraFollower : MonoBehaviour
     private void Update()
     {
         if(_playerPositionController.isRiding)
-        camFollowPlayer();
+            camFollowPlayer();
     }
 
     private void camFollowPlayer()
