@@ -605,9 +605,10 @@ MonoBehaviour:
   pizza: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
   pizzaSight: {fileID: 6056575672896579649}
   playerRoot: {fileID: 0}
+  pizzaSightMeshRenderer: {fileID: 6056575672896579662}
   _onDeliveryDestination: {fileID: 6056575673484448286}
   _playerPositionController: {fileID: 0}
-  pizzaSightMeshRenderer: {fileID: 6056575672896579662}
+  _scoreManager: {fileID: 0}
   speedRotationSight: 10
   speedOfFlying: 30
   rightSide: 1
@@ -818,13 +819,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6135e4dd3e521154d8f4b1d5a81e8642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deliveryDestination: {fileID: 6056575673484448276}
   _pizzaThrowing: {fileID: 6056575673032089206}
   _playerPositionController: {fileID: 0}
   playerRoot: {fileID: 0}
   joystick: {fileID: 0}
-  deliveryRoadCollider: {fileID: 6390111675919911146}
+  deliveryDestination: {fileID: 6056575673484448276}
   listOfClients: {fileID: 4507885814602140719}
+  deliveryRoadCollider: {fileID: 6390111675919911146}
   deliveryCam: {fileID: 6056575673032089207}
 --- !u!1 &6056575673826151395
 GameObject:
@@ -5963,7 +5964,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.8
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5971,11 +5972,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.6
+      value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.965926
+      value: 0.78892463
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -5983,7 +5984,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.2588186
+      value: 0.61449003
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalRotation.z
@@ -5995,7 +5996,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 30
+      value: 75.83
       objectReference: {fileID: 0}
     - target: {fileID: 4353972167979376, guid: 6717c7c2d677a9f439f502029ec5b22a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -10405,7 +10406,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bda19d0e0fe9c47bfa2096fa132923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 6056575673473668934}
   allRigidbodys:
   - {fileID: 6056575673050530965}
   - {fileID: 6056575671868113602}
@@ -10418,6 +10418,7 @@ MonoBehaviour:
   - {fileID: 6056575672878065977}
   - {fileID: 6056575672417983719}
   - {fileID: 6056575672793060674}
+  _animator: {fileID: 6056575673473668934}
 --- !u!1 &6559571887188951587 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 74430ca79ca976145a462b25a394ec22,
