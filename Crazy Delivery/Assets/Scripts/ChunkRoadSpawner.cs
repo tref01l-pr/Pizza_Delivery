@@ -6,7 +6,6 @@ public class ChunkRoadSpawner : MonoBehaviour
 {
     [SerializeField] private List<GameObject> roads;
     [SerializeField] GameObject[] roadChain = new GameObject[6];
-    [SerializeField] private GameObject player;
     private GameObject road;
     
     [SerializeField] private bool firstSpawn = true;

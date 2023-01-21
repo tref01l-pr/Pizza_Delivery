@@ -6,7 +6,6 @@ public class OnDeliveryDestination : MonoBehaviour
     [SerializeField] private PlayerPositionController _playerPositionController;
     
     [SerializeField] private GameObject playerRoot;
-    [SerializeField] private GameObject joystick;
     [SerializeField] private GameObject deliveryDestination;
     [SerializeField] private GameObject listOfClients;
     [SerializeField] private BoxCollider deliveryRoadCollider;
@@ -26,7 +25,6 @@ public class OnDeliveryDestination : MonoBehaviour
         cam = Camera.main;
         cam.enabled = true;
         deliveryCam.enabled = false;
-        joystick = GameObject.Find("Fixed Joystick");
         playerRoot = GameObject.Find("PushBikeWRagdoll");
         _playerPositionController = playerRoot.GetComponent<PlayerPositionController>();
     }
