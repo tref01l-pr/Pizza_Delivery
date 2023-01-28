@@ -1,17 +1,19 @@
 using UnityEngine;
 
-public class CarRiding : MonoBehaviour
+namespace EnvironmentScripts
 {
-    [SerializeField] private TrafficSpawnerAndDestroyer _trafficSpawnerAndDestroyer;
+    public class CarRiding : MonoBehaviour
+    {
+        private TrafficSpawnerAndDestroyer _trafficSpawnerAndDestroyer;
 
-    void Start()
-    {
-        _trafficSpawnerAndDestroyer = transform.parent.GetComponent<TrafficSpawnerAndDestroyer>();
-    }
+        private  void Start()
+        {
+            _trafficSpawnerAndDestroyer = transform.parent.GetComponent<TrafficSpawnerAndDestroyer>();
+        }
     
-    void Update()
-    {
-        transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.speedOfCarRidingForCarRiding * Time.deltaTime;
+        private void Update()
+        {
+            transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.SpeedOfCarRidingForCarRiding * Time.deltaTime;
+        }
     }
-    
 }

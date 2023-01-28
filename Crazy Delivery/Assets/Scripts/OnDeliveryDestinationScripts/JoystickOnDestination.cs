@@ -1,27 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class JoystickOnDestination : MonoBehaviour
+namespace OnDeliveryDestinationScripts
 {
-    [SerializeField] private PlayerPositionController _playerPositionController;
+    public class JoystickOnDestination : MonoBehaviour
+    {
+        [SerializeField] private PlayerPositionController _playerPositionController;
     
-    [SerializeField] private Image joystickImage;
+        [SerializeField] private Image _joystickImage;
 
-    private void Start()
-    {
-        joystickImage = GetComponent<Image>();
-    }
-
-    private void Update()
-    {
-        if (_playerPositionController.isRiding)
+        private void Update()
         {
-            joystickImage.enabled = true;
-        }
-        else
-        {
-            joystickImage.enabled = false;
+            Debug.Log("_playerPositionController.IsRiding = " + _playerPositionController.IsRiding);
+            if (_playerPositionController.IsRiding)
+            {
+                _joystickImage.enabled = true;
+            }
+            else
+            {
+                _joystickImage.enabled = false;
+            }
         }
     }
 }

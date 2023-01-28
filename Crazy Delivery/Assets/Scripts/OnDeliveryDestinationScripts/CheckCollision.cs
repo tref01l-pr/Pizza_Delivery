@@ -5,7 +5,7 @@ namespace OnDeliveryDestinationScripts
 {
     public class CheckCollision : MonoBehaviour
     {
-        [SerializeField] private ScoreManager scoreManager;
+        private ScoreManager _scoreManager;
         private PizzaThrowing _pizzaThrowing;
     
         private Transform _verification;
@@ -17,15 +17,15 @@ namespace OnDeliveryDestinationScripts
     
         private void Start()
         {
-            scoreManager = GameObject.Find("Score").GetComponent<ScoreManager>();
+            _scoreManager = GameObject.Find("Score").GetComponent<ScoreManager>();
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            _pizzaThrowing.canSpawnPizza = true;
-            _pizzaThrowing.isPizza = false;
+            _pizzaThrowing.CanSpawnPizza = true;
+            _pizzaThrowing.IsPizza = false;
             _pizzaThrowing.EnableGravity();
-            Destroy(_pizzaThrowing.pizzaSpawn.GetComponent<CheckCollision>());
+            Destroy(_pizzaThrowing.PizzaSpawn.GetComponent<CheckCollision>());
             if (collision.gameObject.CompareTag("Client"))
             {
                 _verification = collision.collider.transform;
@@ -41,8 +41,8 @@ namespace OnDeliveryDestinationScripts
         {
             if (collision.gameObject.CompareTag("ClientTrigger"))
             {
-                _pizzaThrowing.numberOfClients--;
-                scoreManager.AddPoint();
+                _pizzaThrowing.NumberOfClients--;
+                _scoreManager.AddPoint();
                 Destroy(collision);
             }
         }

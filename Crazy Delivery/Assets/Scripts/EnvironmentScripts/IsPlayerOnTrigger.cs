@@ -1,13 +1,17 @@
 using UnityEngine;
 
-public class IsPlayerOnTrigger : MonoBehaviour
+namespace EnvironmentScripts
 {
-    [SerializeField] ChunkRoadSpawner _chunkRoadSpawner;
-    private void OnTriggerEnter(Collider collision)
+    public class IsPlayerOnTrigger : MonoBehaviour
     {
-        if (collision.gameObject.CompareTag("ChunkTrigger"))
+        [SerializeField] ChunkRoadSpawner _chunkRoadSpawner;
+        
+        private void OnTriggerEnter(Collider collision)
         {
-            _chunkRoadSpawner.Spawn();
+            if (collision.gameObject.CompareTag("ChunkTrigger"))
+            {
+                _chunkRoadSpawner.Spawn();
+            }
         }
     }
 }

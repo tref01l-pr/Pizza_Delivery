@@ -1,38 +1,38 @@
 using UnityEngine;
 
-public class PlayerPositionController : MonoBehaviour
+namespace OnDeliveryDestinationScripts
 {
-    [HideInInspector] public Vector3 newPos;
-    public bool isRiding { get; set; } = true;
-    public bool teleportPlaye { get; set; }= false;
-
-    [SerializeField] private GameObject player;
-    [SerializeField] private Rigidbody[] playerRigidbody;
-    [SerializeField] private Joystick _joystick; 
-
-
-    public void TeleportPlayerOnDestination()
+    public class PlayerPositionController : MonoBehaviour
     {
-        player.transform.position = newPos;
-    }
-    
-    public void DisActivateBicycle()
-    {
-        for (int i = 0; i < playerRigidbody.Length; i++) 
-        { 
-            playerRigidbody[i].velocity = Vector3.zero; 
-            playerRigidbody[i].angularVelocity = Vector3.zero;
-        }
-        player.transform.eulerAngles = new Vector3(0f, 90f, 0f);
+        public Vector3 NewPos { get; set; }
+        public bool IsRiding { get; set; } = true;
 
-        TeleportPlayerOnDestination();
-    }
-    
-    private void Update()
-    {
-        if (isRiding == false)
+        [SerializeField] private GameObject player;
+        [SerializeField] private Rigidbody[] playerRigidbody;
+
+        private void TeleportPlayerOnDestination()
         {
-            DisActivateBicycle();
+            player.transform.position = NewPos;
+        }
+
+        private void DisActivateBicycle()
+        {
+            for (int i = 0; i < playerRigidbody.Length; i++) 
+            { 
+                playerRigidbody[i].velocity = Vector3.zero; 
+                playerRigidbody[i].angularVelocity = Vector3.zero;
+            }
+            player.transform.eulerAngles = new Vector3(0f, 90f, 0f);
+
+            TeleportPlayerOnDestination();
+        }
+    
+        private void Update()
+        {
+            if (IsRiding == false)
+            {
+                DisActivateBicycle();
+            }
         }
     }
 }

@@ -3,64 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class TrafficSpawnerAndDestroyer : MonoBehaviour
+namespace EnvironmentScripts
 {
-    public float speedOfCarRidingForCarRiding { get; set; }
-    
-    [SerializeField] private List<GameObject> trafficPreffabs;
-    private GameObject car;
-    
-    private Vector3 spawnPos;
-    private Quaternion spawnRotation;
-    
-    [SerializeField] private float spawningDelay;
-    [SerializeField] private float speedOfCarRiding;
-    
-    [SerializeField] private bool rightSide;
-    private bool canSpawn = true;
-    
-    private void Start()
+    public class TrafficSpawnerAndDestroyer : MonoBehaviour
     {
-        speedOfCarRidingForCarRiding = speedOfCarRiding;
-        spawnPos = transform.position;
-        if (rightSide)
+        public float SpeedOfCarRidingForCarRiding { get; private set; }
+    
+        [SerializeField] private List<GameObject> _trafficPreffabs;
+    
+        private Vector3 _spawnPos;
+        private Quaternion _spawnRotation;
+    
+        [SerializeField] private float _spawningDelay;
+        [SerializeField] private float _speedOfCarRiding;
+    
+        private bool _canSpawn = true;
+    
+        private void Start()
         {
-            spawnPos.z = spawnPos.z + 20;
+            SpeedOfCarRidingForCarRiding = _speedOfCarRiding;
+            _spawnPos = transform.position;
+            if (transform.position.z > 0)
+            {
+                _spawnPos.z -= 20;
+            }
+            else
+            {
+                _spawnPos.z += 20;
+            }
         }
-        else
-        {
-            spawnPos.z = spawnPos.z - 20;
-        }
-    }
 
-    private void Update()
-    {
-        if (canSpawn)
+        private void Update()
         {
-            canSpawn = false;
-            StartCoroutine(SpawningDelay());
+            if (_canSpawn)
+            {
+                _canSpawn = false;
+                StartCoroutine(SpawningDelay());
+            }
         }
-    }
     
-    private IEnumerator SpawningDelay()
-    {
-        yield return new WaitForSeconds(spawningDelay);
-        if (rightSide != true)
+        private IEnumerator SpawningDelay()
         {
-            car = Instantiate(trafficPreffabs[Random.Range(0, trafficPreffabs.Count)], spawnPos, Quaternion.Euler(0f, 180f, 0f), transform);
+            yield return new WaitForSeconds(_spawningDelay);
+            if (transform.position.z > 0)
+            {
+                Instantiate(_trafficPreffabs[Random.Range(0, _trafficPreffabs.Count - 1)], _spawnPos, Quaternion.Euler(0f, 180f, 0f), transform);
+            }
+            else
+            {
+                Instantiate(_trafficPreffabs[Random.Range(0, _trafficPreffabs.Count - 1)], _spawnPos, Quaternion.Euler(0f, 0f, 0f), transform);
+            }
+            
+            _canSpawn = true;
         }
-        else
-        {
-            car = Instantiate(trafficPreffabs[Random.Range(0, trafficPreffabs.Count)], spawnPos, Quaternion.Euler(0f, 0f, 0f), transform);
-        }
-        canSpawn = true;
-    }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Car"))
+        private void OnCollisionEnter(Collision collision)
         {
-            Destroy(collision.gameObject);
+            if (collision.gameObject.CompareTag("Car"))
+            {
+                Destroy(collision.gameObject);
+            }
         }
     }
 }

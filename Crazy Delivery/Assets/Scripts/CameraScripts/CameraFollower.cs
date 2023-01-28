@@ -1,33 +1,23 @@
+using OnDeliveryDestinationScripts;
 using UnityEngine;
 
 namespace CameraScripts
 {
     public class CameraFollower : MonoBehaviour
     {
-        [SerializeField] private GameObject player;
-        private GameObject _playerRoot;
-        private Camera _cam;
+        [SerializeField] private GameObject _player;
     
-        [SerializeField] private PlayerPositionController playerPositionController;
-    
-        [SerializeField] private bool followPlayer = true;
-
-        private void Start()
-        {
-            _cam = Camera.main;
-            _playerRoot = GameObject.Find("PushBikeWRagdoll");
-            playerPositionController = _playerRoot.GetComponent<PlayerPositionController>();
-        }
+        [SerializeField] private PlayerPositionController _playerPositionController;
 
         private void Update()
         {
-            if(playerPositionController.isRiding)
+            if(_playerPositionController.IsRiding)
                 camFollowPlayer();
         }
 
         private void camFollowPlayer()
         {
-            Vector3 newPos = new Vector3(player.transform.position.x - 19f, transform.position.y, player.transform.position.z - 16f);
+            Vector3 newPos = new Vector3(_player.transform.position.x - 19f, transform.position.y, _player.transform.position.z - 16f);
             transform.position = newPos;
         }
     }

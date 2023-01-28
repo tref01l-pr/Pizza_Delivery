@@ -4,14 +4,14 @@ namespace AnimationScripts
 {
     public class RagDollController : MonoBehaviour
     {
-        [SerializeField] private Rigidbody[] allRigidbodys;
+        [SerializeField] private Rigidbody[] _allRigidbodys;
     
-        [SerializeField] private Animator animator;
+        [SerializeField] private Animator _animator;
     
         public void MakePhysical()
         {
-            animator.enabled = false;
-            foreach (var rigidobody in allRigidbodys)
+            _animator.enabled = false;
+            foreach (var rigidobody in _allRigidbodys)
             {
                 rigidobody.isKinematic = false;
             }
@@ -19,7 +19,7 @@ namespace AnimationScripts
     
         private void Awake()
         {
-            animator.Play("mixamo_com");
+            _animator.Play("mixamo_com");
         }
     
         private void OnCollisionEnter(Collision collision)

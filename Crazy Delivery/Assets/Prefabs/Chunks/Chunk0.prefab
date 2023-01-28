@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3905452128044215431}
   m_Layer: 0
-  m_Name: Clients
+  m_Name: ListOfClients
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -599,18 +599,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8386379e2778944ac45368e64f4699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfClients: 2
-  numberOfThrowingChance: 0
-  pizzaSpawn: {fileID: 0}
-  pizza: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
-  pizzaSight: {fileID: 6056575672896579649}
-  playerRoot: {fileID: 0}
-  pizzaSightMeshRenderer: {fileID: 6056575672896579662}
+  _pizza: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
+  _pizzaSight: {fileID: 6056575672896579649}
+  _playerRoot: {fileID: 0}
+  _pizzaSightMeshRenderer: {fileID: 6056575672896579662}
   _onDeliveryDestination: {fileID: 6056575673484448286}
   _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
-  speedRotationSight: 10
-  speedOfFlying: 30
   rightSide: 1
 --- !u!1 &6056575673451164267
 GameObject:
@@ -821,12 +816,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pizzaThrowing: {fileID: 6056575673032089206}
   _playerPositionController: {fileID: 0}
-  playerRoot: {fileID: 0}
-  joystick: {fileID: 0}
-  deliveryDestination: {fileID: 6056575673484448276}
-  listOfClients: {fileID: 4507885814602140719}
-  deliveryRoadCollider: {fileID: 6390111675919911146}
-  deliveryCam: {fileID: 6056575673032089207}
+  _listOfClients: {fileID: 4507885814602140719}
+  _deliveryRoadCollider: {fileID: 6390111675919911146}
+  _deliveryCam: {fileID: 6056575673032089207}
 --- !u!1 &6056575673826151395
 GameObject:
   m_ObjectHideFlags: 0
@@ -10406,18 +10398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77bda19d0e0fe9c47bfa2096fa132923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allRigidbodys:
-  - {fileID: 6056575673050530965}
-  - {fileID: 6056575671868113602}
-  - {fileID: 6056575673870604231}
-  - {fileID: 6056575672184973224}
-  - {fileID: 6056575673752013521}
-  - {fileID: 6056575672495961224}
-  - {fileID: 6056575673860849356}
-  - {fileID: 6056575671846378148}
-  - {fileID: 6056575672878065977}
-  - {fileID: 6056575672417983719}
-  - {fileID: 6056575672793060674}
+  _allRigidbodys: []
   _animator: {fileID: 6056575673473668934}
 --- !u!1 &6559571887188951587 stripped
 GameObject:
