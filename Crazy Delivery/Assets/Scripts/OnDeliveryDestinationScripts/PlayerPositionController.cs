@@ -4,15 +4,34 @@ namespace OnDeliveryDestinationScripts
 {
     public class PlayerPositionController : MonoBehaviour
     {
-        public Vector3 NewPos { get; set; }
-        public bool IsRiding { get; set; } = true;
-
         [SerializeField] private GameObject player;
         [SerializeField] private Rigidbody[] playerRigidbody;
 
+        private Vector3 _newPos;
+        
+        public bool IsRiding { get; private set; } = true;
+        
+        private void Update()
+        {
+            if (IsRiding == false)
+            {
+                DisActivateBicycle();
+            }
+        }
+
+        public void SetNewPos(Vector3 newPos)
+        {
+            _newPos = newPos;
+        }
+
+        public void SetIsRiding(bool isRiding)
+        {
+            IsRiding = isRiding;
+        }
+        
         private void TeleportPlayerOnDestination()
         {
-            player.transform.position = NewPos;
+            player.transform.position = _newPos;
         }
 
         private void DisActivateBicycle()
@@ -25,14 +44,6 @@ namespace OnDeliveryDestinationScripts
             player.transform.eulerAngles = new Vector3(0f, 90f, 0f);
 
             TeleportPlayerOnDestination();
-        }
-    
-        private void Update()
-        {
-            if (IsRiding == false)
-            {
-                DisActivateBicycle();
-            }
         }
     }
 }

@@ -7,14 +7,8 @@ namespace OnDeliveryDestinationScripts
     {
         private ScoreManager _scoreManager;
         private PizzaThrowing _pizzaThrowing;
-    
         private Transform _verification;
-
-        public void Init(PizzaThrowing pizzaThrowing)
-        {
-            _pizzaThrowing = pizzaThrowing;
-        }
-    
+        
         private void Start()
         {
             _scoreManager = GameObject.Find("Score").GetComponent<ScoreManager>();
@@ -22,10 +16,10 @@ namespace OnDeliveryDestinationScripts
 
         private void OnCollisionEnter(Collision collision)
         {
-            _pizzaThrowing.CanSpawnPizza = true;
-            _pizzaThrowing.IsPizza = false;
+            _pizzaThrowing.SetCanSpawnPizza(true);
+            _pizzaThrowing.SetIsPizza(false);
             _pizzaThrowing.EnableGravity();
-            Destroy(_pizzaThrowing.PizzaSpawn.GetComponent<CheckCollision>());
+            Destroy(transform.GetComponent<CheckCollision>());
             if (collision.gameObject.CompareTag("Client"))
             {
                 _verification = collision.collider.transform;
@@ -41,10 +35,15 @@ namespace OnDeliveryDestinationScripts
         {
             if (collision.gameObject.CompareTag("ClientTrigger"))
             {
-                _pizzaThrowing.NumberOfClients--;
+                _pizzaThrowing.SetNumberOfClients(_pizzaThrowing.NumberOfClients - 1);
                 _scoreManager.AddPoint();
                 Destroy(collision);
             }
+        }
+        
+        public void Init(PizzaThrowing pizzaThrowing)
+        {
+            _pizzaThrowing = pizzaThrowing;
         }
     }
 }

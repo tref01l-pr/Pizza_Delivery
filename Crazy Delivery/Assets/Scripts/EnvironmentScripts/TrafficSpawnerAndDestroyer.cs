@@ -7,18 +7,16 @@ namespace EnvironmentScripts
 {
     public class TrafficSpawnerAndDestroyer : MonoBehaviour
     {
-        public float SpeedOfCarRidingForCarRiding { get; private set; }
-    
         [SerializeField] private List<GameObject> _trafficPreffabs;
-    
+        [SerializeField] private float _spawningDelay;
+        [SerializeField] private float _speedOfCarRiding;
+        
+        private bool _canSpawn = true;
         private Vector3 _spawnPos;
         private Quaternion _spawnRotation;
     
-        [SerializeField] private float _spawningDelay;
-        [SerializeField] private float _speedOfCarRiding;
-    
-        private bool _canSpawn = true;
-    
+        public float SpeedOfCarRidingForCarRiding { get; private set; }
+        
         private void Start()
         {
             SpeedOfCarRidingForCarRiding = _speedOfCarRiding;
@@ -41,7 +39,15 @@ namespace EnvironmentScripts
                 StartCoroutine(SpawningDelay());
             }
         }
-    
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Car"))
+            {
+                Destroy(collision.gameObject);
+            }
+        }
+        
         private IEnumerator SpawningDelay()
         {
             yield return new WaitForSeconds(_spawningDelay);
@@ -55,14 +61,6 @@ namespace EnvironmentScripts
             }
             
             _canSpawn = true;
-        }
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.CompareTag("Car"))
-            {
-                Destroy(collision.gameObject);
-            }
         }
     }
 }

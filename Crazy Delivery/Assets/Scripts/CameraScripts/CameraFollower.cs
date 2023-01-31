@@ -6,7 +6,6 @@ namespace CameraScripts
     public class CameraFollower : MonoBehaviour
     {
         [SerializeField] private GameObject _player;
-    
         [SerializeField] private PlayerPositionController _playerPositionController;
 
         private void Update()

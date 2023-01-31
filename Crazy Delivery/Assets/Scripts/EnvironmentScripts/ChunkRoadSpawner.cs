@@ -8,12 +8,25 @@ namespace EnvironmentScripts
     {
         [SerializeField] private List<GameObject> _chunkPrefabs;
         [SerializeField] private GameObject[] _chunkChain = new GameObject[6];
-        private GameObject _road;
-    
         [SerializeField] private float _roadLength;
+        
         private bool _firstSpawn = true;
         private int _counter = 4;
-    
+        private GameObject _road;
+
+        private void Start()
+        {
+            _road = Instantiate(_chunkPrefabs[Random.Range(0, _chunkPrefabs.Count - 1)], transform.position, Quaternion.identity);
+            for (int i = 0; i < _chunkChain.Length - 2; i++)
+            {
+                if (_chunkChain[i] == null)
+                {
+                    _chunkChain[i] = _road;
+                    break;
+                }
+            }
+        }
+
         public void Spawn()
         {
             Vector3 position = new Vector3((_road.transform.position.z + _roadLength) * _counter, 0, 0);
@@ -30,20 +43,7 @@ namespace EnvironmentScripts
             }
             _counter++;
         }
-    
-        private void Start()
-        {
-            _road = Instantiate(_chunkPrefabs[Random.Range(0, _chunkPrefabs.Count - 1)], transform.position, Quaternion.identity);
-            for (int i = 0; i < _chunkChain.Length - 2; i++)
-            {
-                if (_chunkChain[i] == null)
-                {
-                    _chunkChain[i] = _road;
-                    break;
-                }
-            }
-        }
-
+        
         private void ChunkRemove()
         {
             Destroy(_chunkChain[0]);
