@@ -236,8 +236,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e627e95334461ef4fa521f0e2751a264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 1092553836030116595}
+  _target: {fileID: 1092553836030116595}
   _playerPositionController: {fileID: 1092553836030116601}
+  _targetX: 19
+  _targetZ: 16
 --- !u!114 &107004822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2207,10 +2209,8 @@ MonoBehaviour:
   - {fileID: 1164999938}
   - {fileID: 792709570}
   - {fileID: 2121383238}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   _roadLength: 303.6
+  _numberOfChunksBehindPlayer: 1
 --- !u!4 &2101824082
 Transform:
   m_ObjectHideFlags: 0
