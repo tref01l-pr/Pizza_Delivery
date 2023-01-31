@@ -580,6 +580,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chunk0
       objectReference: {fileID: 0}
+    - target: {fileID: 6308023711333444332, guid: 209bcfa80dfb2ce4ca10c22d438edb06,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7649794767111723953, guid: 209bcfa80dfb2ce4ca10c22d438edb06, type: 3}
     - {fileID: 7928224048589239100, guid: 209bcfa80dfb2ce4ca10c22d438edb06, type: 3}
