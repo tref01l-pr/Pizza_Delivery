@@ -10,6 +10,7 @@ namespace CameraScripts
 
         private void Update()
         {
+        /
             if(_playerPositionController.IsRiding)
                 camFollowPlayer();
         }
