@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EnvironmentScripts
 {
-    public class IsPlayerOnTrigger : MonoBehaviour
+    public class IsPlayerOnTrigger : MonoBehaviour // trigger chunk observer переименовать
     {
         [SerializeField] ChunkRoadSpawner _chunkRoadSpawner;
         
