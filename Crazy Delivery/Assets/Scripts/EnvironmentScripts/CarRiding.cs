@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EnvironmentScripts
 {
-    public class CarRiding : MonoBehaviour
+    public class CarRiding : MonoBehaviour //CarMover
     {
         private TrafficSpawnerAndDestroyer _trafficSpawnerAndDestroyer;
 
@@ -13,7 +13,8 @@ namespace EnvironmentScripts
     
         private void Update()
         {
-            transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.SpeedOfCarRidingForCarRiding * Time.deltaTime;
+            // убрать зависимость скорости автомобиля от ФПС
+            transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.SpeedOfCarRidingForCarRiding * Time.deltaTime; // вынести в метод Move
         }
     }
 }
