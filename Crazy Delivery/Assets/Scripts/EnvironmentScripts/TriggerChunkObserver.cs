@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EnvironmentScripts
 {
-    public class IsPlayerOnTrigger : MonoBehaviour
+    public class TriggerChunkObserver : MonoBehaviour
     {
         [SerializeField] ChunkRoadSpawner _chunkRoadSpawner;
         

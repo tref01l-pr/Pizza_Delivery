@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EnvironmentScripts
 {
-    public class CarRiding : MonoBehaviour
+    public class CarMover : MonoBehaviour
     {
         private TrafficSpawnerAndDestroyer _trafficSpawnerAndDestroyer;
 
@@ -13,7 +13,13 @@ namespace EnvironmentScripts
     
         private void Update()
         {
-            transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.SpeedOfCarRidingForCarRiding * Time.deltaTime;
+            Move();
         }
+
+        private void Move()
+        {
+            transform.localPosition -= transform.forward * _trafficSpawnerAndDestroyer.CarSpeedForCarRiding * Time.fixedDeltaTime;
+        }
+        
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,51 +8,48 @@ namespace EnvironmentScripts
     public class ChunkRoadSpawner : MonoBehaviour
     {
         [SerializeField] private List<GameObject> _chunkPrefabs;
-        [SerializeField] private GameObject[] _chunkChain = new GameObject[6];
+        [SerializeField] private List<GameObject> _chunkChain;
         [SerializeField] private float _roadLength;
+        [SerializeField] private int _numberOfChunksBehindPlayer;
+
+        private int _сhunksBeforeStartRemoving;
         
-        private bool _firstSpawn = true;
-        private int _counter = 4;
+        private int _multiplier = 4;
         private GameObject _road;
 
         private void Start()
         {
-            _road = Instantiate(_chunkPrefabs[Random.Range(0, _chunkPrefabs.Count - 1)], transform.position, Quaternion.identity);
-            for (int i = 0; i < _chunkChain.Length - 2; i++)
-            {
-                if (_chunkChain[i] == null)
-                {
-                    _chunkChain[i] = _road;
-                    break;
-                }
-            }
+            _сhunksBeforeStartRemoving = _numberOfChunksBehindPlayer;
+            
+            CreateChunk(transform.position);
         }
 
         public void Spawn()
         {
-            Vector3 position = new Vector3((_road.transform.position.z + _roadLength) * _counter, 0, 0);
+            Vector3 position = new Vector3((_road.transform.position.z + _roadLength) * _multiplier, 0, 0);
+            
+            CreateChunk(position);
+            
+            ChunkRemove();
+        }
+
+        private void CreateChunk(Vector3 position)
+        {
             _road = Instantiate(_chunkPrefabs[Random.Range(0, _chunkPrefabs.Count)], position, Quaternion.identity);
-            if (_firstSpawn)
-            {
-                _chunkChain[_chunkChain.Length - 2] = _road;
-                _firstSpawn = false;
-            }
-            else
-            {
-                _chunkChain[_chunkChain.Length - 1] = _road;
-                ChunkRemove();
-            }
-            _counter++;
+            _chunkChain.Add(_road);
+            _multiplier++;
         }
         
         private void ChunkRemove()
         {
-            Destroy(_chunkChain[0]);
-            for (int i = 1; i < _chunkChain.Length; i++)
+            if(_сhunksBeforeStartRemoving > 0)
             {
-                _chunkChain[i - 1] = _chunkChain[i];
+                _сhunksBeforeStartRemoving--;
+                return;
             }
-            _chunkChain[_chunkChain.Length - 1] = null;
+            
+            Destroy(_chunkChain[0]);
+            _chunkChain.RemoveAt(0);
         }
     }
 }

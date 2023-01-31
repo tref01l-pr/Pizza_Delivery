@@ -5,19 +5,23 @@ namespace CameraScripts
 {
     public class CameraFollower : MonoBehaviour
     {
-        [SerializeField] private GameObject _player;
+        [SerializeField] private GameObject _target;
         [SerializeField] private PlayerPositionController _playerPositionController;
-
+        [SerializeField] private float _targetX;
+        [SerializeField] private float _targetZ;
+        
         private void Update()
         {
-            if(_playerPositionController.IsRiding)
-                camFollowPlayer();
+            if(PlayerRiding)
+                Follow();
         }
 
-        private void camFollowPlayer()
+        private bool PlayerRiding => _playerPositionController.IsRiding;
+
+        private void Follow()
         {
-            Vector3 newPos = new Vector3(_player.transform.position.x - 19f, transform.position.y, _player.transform.position.z - 16f);
-            transform.position = newPos;
+            Vector3 newPosition = new Vector3(_target.transform.position.x - _targetX, transform.position.y, _target.transform.position.z - _targetZ);
+            transform.position = newPosition;
         }
     }
 }

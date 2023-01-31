@@ -9,25 +9,25 @@ namespace EnvironmentScripts
     {
         [SerializeField] private List<GameObject> _trafficPreffabs;
         [SerializeField] private float _spawningDelay;
-        [SerializeField] private float _speedOfCarRiding;
-        
+        [SerializeField] private float _carSpeed;
+
+        private float _distnceToSpawner = 20f;
         private bool _canSpawn = true;
-        private Vector3 _spawnPos;
+        private Vector3 _spawnPosition;
         private Quaternion _spawnRotation;
-    
-        public float SpeedOfCarRidingForCarRiding { get; private set; }
+
+        public float CarSpeedForCarRiding => _carSpeed;
         
         private void Start()
         {
-            SpeedOfCarRidingForCarRiding = _speedOfCarRiding;
-            _spawnPos = transform.position;
+            _spawnPosition = transform.position;
             if (transform.position.z > 0)
             {
-                _spawnPos.z -= 20;
+                _spawnPosition.z -= _distnceToSpawner;
             }
             else
             {
-                _spawnPos.z += 20;
+                _spawnPosition.z += _distnceToSpawner;
             }
         }
 
@@ -47,17 +47,22 @@ namespace EnvironmentScripts
                 Destroy(collision.gameObject);
             }
         }
+
+        private void CreateCar(Quaternion rotation)
+        {
+            Instantiate(_trafficPreffabs[Random.Range(0, _trafficPreffabs.Count - 1)], _spawnPosition, rotation, transform);
+        }
         
         private IEnumerator SpawningDelay()
         {
             yield return new WaitForSeconds(_spawningDelay);
             if (transform.position.z > 0)
             {
-                Instantiate(_trafficPreffabs[Random.Range(0, _trafficPreffabs.Count - 1)], _spawnPos, Quaternion.Euler(0f, 180f, 0f), transform);
+                CreateCar(Quaternion.Euler(0f, 180f, 0f));
             }
             else
             {
-                Instantiate(_trafficPreffabs[Random.Range(0, _trafficPreffabs.Count - 1)], _spawnPos, Quaternion.Euler(0f, 0f, 0f), transform);
+                CreateCar(Quaternion.Euler(0f, 0f, 0f));
             }
             
             _canSpawn = true;

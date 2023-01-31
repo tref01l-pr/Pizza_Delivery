@@ -63,7 +63,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 5
-  _speedOfCarRiding: 10
+  _carSpeed: 10
 --- !u!65 &8282026630970088589
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -703,7 +703,6 @@ MonoBehaviour:
   _onDeliveryDestination: {fileID: 6056575673484448286}
   _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
-  rightSide: 1
 --- !u!1 &6056575673451164267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,7 +1033,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 10
-  _speedOfCarRiding: 7
+  _carSpeed: 15
 --- !u!65 &4515843710945010086
 BoxCollider:
   m_ObjectHideFlags: 0

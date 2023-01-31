@@ -63,7 +63,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 10
-  _speedOfCarRiding: 12
+  _carSpeed: 20
 --- !u!65 &8282026630970088589
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 9
-  _speedOfCarRiding: 10
+  _carSpeed: 10
 --- !u!65 &5236300926608528134
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 15
-  _speedOfCarRiding: 20
+  _carSpeed: 10
 --- !u!65 &394097575582570040
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -333,7 +333,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 10
-  _speedOfCarRiding: 15
+  _carSpeed: 10
 --- !u!65 &6541018132804787458
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -701,7 +701,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 9
-  _speedOfCarRiding: 8
+  _carSpeed: 15
 --- !u!65 &6197352674815822123
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -845,7 +845,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 10
-  _speedOfCarRiding: 12
+  _carSpeed: 20
 --- !u!65 &2563851217980137689
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1168,7 +1168,6 @@ MonoBehaviour:
   _onDeliveryDestination: {fileID: 6056575673484448286}
   _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
-  rightSide: 0
 --- !u!1 &6056575673451164267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1543,7 +1542,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 20
-  _speedOfCarRiding: 6
+  _carSpeed: 30
 --- !u!65 &4515843710945010086
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1718,7 +1717,7 @@ MonoBehaviour:
   - {fileID: 1646981259178978, guid: 0a430984ad167d044919d04af91de9e0, type: 3}
   - {fileID: 1646981259178978, guid: dd2d26f1ef62e7140b6f02741408007a, type: 3}
   _spawningDelay: 12
-  _speedOfCarRiding: 8
+  _carSpeed: 15
 --- !u!65 &6074335388406767861
 BoxCollider:
   m_ObjectHideFlags: 0
