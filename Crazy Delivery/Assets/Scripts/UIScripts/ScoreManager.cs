@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    public int Score { get; private set; }
-
     [SerializeField] private Text scoreText;
 
+    public int Score { get; private set; }
+    
     private void Start()
     {
         Score = 0;

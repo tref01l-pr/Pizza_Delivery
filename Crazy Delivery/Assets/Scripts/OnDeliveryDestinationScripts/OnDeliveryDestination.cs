@@ -5,37 +5,39 @@ namespace OnDeliveryDestinationScripts
     public class OnDeliveryDestination : MonoBehaviour
     {
         [SerializeField] private PizzaThrowing _pizzaThrowing;
-        [SerializeField] private PlayerPositionController _playerPositionController;
         [SerializeField] private GameObject _listOfClients;
         [SerializeField] private BoxCollider _deliveryRoadCollider;
         [SerializeField] private Camera _deliveryCam;
         
         private GameObject _playerRoot;
         private Camera _cam;
+        private PlayerPositionController _playerPositionController;
 
         private void Start()
         {
             _cam = Camera.main;
             if (_cam != null) _cam.enabled = true;
             _deliveryCam.enabled = false;
-            _playerRoot = GameObject.Find("PushBikeWRagdoll");
-            _playerPositionController = _playerRoot.GetComponent<PlayerPositionController>();
         }
-
 
         private void OnTriggerEnter(Collider collision)
         {
             if (collision.gameObject.CompareTag("Player"))
             {
                 Destroy(gameObject);
-                Vector3 newPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-                _playerPositionController.SetNewPos(newPos);
+                Vector3 newPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+                _playerPositionController.SetNewPos(newPosition);
                 _playerPositionController.SetIsRiding(false);
                 _pizzaThrowing.SetOnDestination(true);
 
                 FindNumberOfClients();
                 TurnOnDeliveryCamera();
             }
+        }
+        public void Initialize(GameObject player)
+        {
+            _playerRoot = player;
+            _playerPositionController = _playerRoot.GetComponent<PlayerPositionController>();
         }
         
         public void TurnOnMainCamera()

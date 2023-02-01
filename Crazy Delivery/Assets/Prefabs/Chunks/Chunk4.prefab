@@ -122,14 +122,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8386379e2778944ac45368e64f4699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pizzaPrefab: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a,
+  _pizzaPrefab: {fileID: 4510464901800681813, guid: fa44f0d9a5a05314ea800e30dbcc564a,
     type: 3}
   _pizzaSight: {fileID: 6056575672896579649}
-  _playerRoot: {fileID: 0}
   _pizzaSightMeshRenderer: {fileID: 6056575672896579662}
   _onDeliveryDestination: {fileID: 6056575673484448286}
-  _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
+  _playerPositionController: {fileID: 0}
 --- !u!1 &602869475429913428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1411,14 +1410,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8386379e2778944ac45368e64f4699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pizzaPrefab: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a,
+  _pizzaPrefab: {fileID: 4510464901800681813, guid: fa44f0d9a5a05314ea800e30dbcc564a,
     type: 3}
   _pizzaSight: {fileID: 5577457029949547673}
-  _playerRoot: {fileID: 0}
   _pizzaSightMeshRenderer: {fileID: 6976924402449451300}
   _onDeliveryDestination: {fileID: 4556211220825842162}
-  _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
+  _playerPositionController: {fileID: 0}
 --- !u!1 &6056575672101592436
 GameObject:
   m_ObjectHideFlags: 0
@@ -1918,6 +1916,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6056575673826151394}
+  - component: {fileID: 1620654141444326269}
   m_Layer: 0
   m_Name: Chunk4
   m_TagString: Ground
@@ -1970,6 +1969,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1620654141444326269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6056575673826151395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40192c3dcf7a0844289a14f2c99ecafc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pizzaThrowing:
+  - {fileID: 4476932887618267815}
+  - {fileID: 3196072371262228296}
+  _onDeliveryDestinations:
+  - {fileID: 4556211220825842162}
+  - {fileID: 6056575673484448286}
 --- !u!1 &6359172355115869723
 GameObject:
   m_ObjectHideFlags: 0

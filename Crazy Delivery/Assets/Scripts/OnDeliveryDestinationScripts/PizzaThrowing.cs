@@ -4,11 +4,10 @@ namespace OnDeliveryDestinationScripts
 {
     public class PizzaThrowing : MonoBehaviour
     {
-        [SerializeField] private GameObject _pizzaPrefab;
+        [SerializeField] private Pizza _pizzaPrefab;
         [SerializeField] private GameObject _pizzaSight; 
         [SerializeField] private MeshRenderer _pizzaSightMeshRenderer;
         [SerializeField] private OnDeliveryDestination _onDeliveryDestination;
-        [SerializeField] private ScoreManager _scoreManager;
     
         private float _speedRotationSight = 15f;
         private float _speedErroreEclusion;
@@ -16,20 +15,17 @@ namespace OnDeliveryDestinationScripts
         private bool _canSpawnPizza = true;
         private bool _canSpawnPizzaSight = true;
         private bool _onDestination;
-        private GameObject _pizzaSpawn;
+        private Pizza _pizzaSpawn;
         private GameObject _player;
         private Vector3 _spawnPosition;
         private PlayerPositionController _playerPositionController;
+        private ScoreManager _scoreManager;
 
         public int NumberOfClients { get; private set; }
 
         private void Start()
         {
-            _scoreManager = GameObject.Find("Score").GetComponent<ScoreManager>();
             _speedErroreEclusion = _speedRotationSight * 2;
-            _player = GameObject.Find("PushBikeWRagdoll");
-            _playerPositionController = _player.GetComponent<PlayerPositionController>();
-            _playerPositionController.SetIsRiding(true);
             _spawnPosition = transform.position;
             _spawnPosition.y -= 0.5f;
             _pizzaSightMeshRenderer.enabled = false;
@@ -48,13 +44,15 @@ namespace OnDeliveryDestinationScripts
        
                 if (NumberOfClients == 0 || _numberOfThrowingChance < 0)
                 {
-                    _playerPositionController.SetIsRiding(true);
-                    EndPizzaThrowing();
+                    if (_playerPositionController != null)
+                    {
+                        _playerPositionController.SetIsRiding(true);
+                        EndPizzaThrowing();
+                    }
+
                 }
             }
         }
-
-        
         
         public void SetNumberOfThrowingChance(int numberOfThrowingChance)
         {
@@ -70,12 +68,6 @@ namespace OnDeliveryDestinationScripts
         {
             _canSpawnPizza = canSpawnPizza;
         }
-
-        /*public void SetPizzaSightSpawn(bool pizzaSightSpawn)
-        {
-            _canSpawnPizzaSight = pizzaSightSpawn;
-        }*/
-        
 
         public void SetOnDestination(bool onDestination)
         {
@@ -104,14 +96,9 @@ namespace OnDeliveryDestinationScripts
         {
             _pizzaSpawn = Instantiate(_pizzaPrefab, _spawnPosition, 
                 Quaternion.Euler(0, _pizzaSight.transform.localEulerAngles.y, 0), transform.root);
-            
-            _pizzaSpawn.GetComponent<CheckCollision>().Init(this);
-            _pizzaSpawn.GetComponent<Collider>().enabled = true;
+            _pizzaSpawn.Initialize(this, _scoreManager);
         }
-    
         
-        
-    
         private void RotateSight()
         {
             SpawnPizzaSight();
@@ -154,6 +141,14 @@ namespace OnDeliveryDestinationScripts
             _onDestination = false;
             _pizzaSightMeshRenderer.enabled = false;
             _onDeliveryDestination.TurnOnMainCamera();
+        }
+
+        public void Initialize(ScoreManager scoreManager, GameObject player)
+        {
+            _scoreManager = scoreManager;
+            _player = player;
+            _playerPositionController = _player.GetComponent<PlayerPositionController>();
+            _playerPositionController.SetIsRiding(true);
         }
     }
 }

@@ -3,21 +3,17 @@ using UnityEngine;
 
 namespace OnDeliveryDestinationScripts
 {
-    public class CheckCollision : MonoBehaviour
+    public class CollisionObserver : MonoBehaviour
     {
-        private ScoreManager _scoreManager;
-        private PizzaThrowing _pizzaThrowing;
+        [SerializeField] private PizzaThrowing _pizzaThrowing;
         
-        private void Start()
-        {
-            _scoreManager = GameObject.Find("Score").GetComponent<ScoreManager>();
-        }
+        private ScoreManager _scoreManager;
 
         private void OnCollisionEnter(Collision collision)
         {
             _pizzaThrowing.SetCanSpawnPizza(true);
             _pizzaThrowing.EnableGravity();
-            Destroy(transform.GetComponent<CheckCollision>());
+            Destroy(transform.GetComponent<CollisionObserver>());
             Destroy(transform.GetComponent<PizzaMover>());
             if (collision.gameObject.CompareTag("Client"))
             {
@@ -35,9 +31,10 @@ namespace OnDeliveryDestinationScripts
             }
         }
         
-        public void Init(PizzaThrowing pizzaThrowing)
+        public void Initialize(PizzaThrowing pizzaThrowing, ScoreManager scoreManager)
         {
             _pizzaThrowing = pizzaThrowing;
+            _scoreManager = scoreManager;
         }
 
         private void FindClientRootAndMakePhysical(Transform clientBone)

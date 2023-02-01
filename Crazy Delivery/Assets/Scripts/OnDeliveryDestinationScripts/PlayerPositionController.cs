@@ -41,6 +41,7 @@ namespace OnDeliveryDestinationScripts
                 playerRigidbody[i].velocity = Vector3.zero; 
                 playerRigidbody[i].angularVelocity = Vector3.zero;
             }
+            
             player.transform.eulerAngles = new Vector3(0f, 90f, 0f);
 
             TeleportPlayerOnDestination();

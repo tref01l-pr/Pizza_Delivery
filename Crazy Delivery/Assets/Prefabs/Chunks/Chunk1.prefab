@@ -696,14 +696,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8386379e2778944ac45368e64f4699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pizzaPrefab: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a,
+  _pizzaPrefab: {fileID: 4510464901800681813, guid: fa44f0d9a5a05314ea800e30dbcc564a,
     type: 3}
   _pizzaSight: {fileID: 6056575672896579649}
-  _playerRoot: {fileID: 0}
   _pizzaSightMeshRenderer: {fileID: 6056575672896579662}
   _onDeliveryDestination: {fileID: 6056575673484448286}
-  _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
+  _playerPositionController: {fileID: 0}
 --- !u!1 &6056575673451164267
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,6 +924,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6056575673826151394}
+  - component: {fileID: -95582737414185383}
   m_Layer: 0
   m_Name: Chunk1
   m_TagString: Ground
@@ -971,6 +971,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-95582737414185383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6056575673826151395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40192c3dcf7a0844289a14f2c99ecafc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pizzaThrowing:
+  - {fileID: 6056575673032089206}
+  _onDeliveryDestinations:
+  - {fileID: 6056575673484448286}
 --- !u!1 &7589013924236827830
 GameObject:
   m_ObjectHideFlags: 0
