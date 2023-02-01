@@ -8,26 +8,17 @@ public class ActivateRestartMenu : MonoBehaviour
     [SerializeField] private RB_Controller _rbController;
     [SerializeField] private ScoreManager _scoreManager;
     
-    [SerializeField] private Canvas PlayerHood;
-    [SerializeField] private Canvas RestartMenu;
+    [SerializeField] private Canvas _playerHood;
+    [SerializeField] private Canvas _restartMenu;
 
-    [SerializeField] private Text scoreOnRestartMenu;
-    [SerializeField] private Text highScore;
+    [SerializeField] private Text _scoreOnRestartMenu;
+    [SerializeField] private Text _highScore;
 
-    private void SavingHighScore()
-    {
-        if (_scoreManager.Score > PlayerPrefs.GetInt("HighScore", 0))
-        {
-            PlayerPrefs.SetInt("HighScore", _scoreManager.Score);
-            highScore.text = _scoreManager.Score.ToString();
-        }
-    }
-    
     private void Start()
     {
-        PlayerHood.enabled = true;
-        RestartMenu.enabled = false;
-        highScore.text = PlayerPrefs.GetInt("HighScore", 0).ToString();
+        _playerHood.enabled = true;
+        _restartMenu.enabled = false;
+        _highScore.text = PlayerPrefs.GetInt("HighScore", 0).ToString();
     }
 
     private void Update()
@@ -35,10 +26,19 @@ public class ActivateRestartMenu : MonoBehaviour
         //Reset();
         if (_rbController.isCrashed)
         {
-            PlayerHood.enabled = false;
-            RestartMenu.enabled = true;
-            scoreOnRestartMenu.text = _scoreManager.Score.ToString();
+            _playerHood.enabled = false;
+            _restartMenu.enabled = true;
+            _scoreOnRestartMenu.text = _scoreManager.Score.ToString();
             SavingHighScore();
+        }
+    }
+    
+    private void SavingHighScore()
+    {
+        if (_scoreManager.Score > PlayerPrefs.GetInt("HighScore", 0))
+        {
+            PlayerPrefs.SetInt("HighScore", _scoreManager.Score);
+            _highScore.text = _scoreManager.Score.ToString();
         }
     }
 

@@ -2252,10 +2252,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rbController: {fileID: 1092553836030116600}
   _scoreManager: {fileID: 1260141080}
-  PlayerHood: {fileID: 411321690}
-  RestartMenu: {fileID: 1922185168}
-  scoreOnRestartMenu: {fileID: 1271529768}
-  highScore: {fileID: 165409254}
+  _playerHood: {fileID: 411321690}
+  _restartMenu: {fileID: 1922185168}
+  _scoreOnRestartMenu: {fileID: 1271529768}
+  _highScore: {fileID: 165409254}
 --- !u!114 &1092553836030116600 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8809815719440490551, guid: ff6b301ff5b16134d91865043405cd3b,
