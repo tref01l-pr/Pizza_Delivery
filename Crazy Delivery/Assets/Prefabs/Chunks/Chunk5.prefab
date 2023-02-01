@@ -1161,7 +1161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8386379e2778944ac45368e64f4699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pizza: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
+  _pizzaPrefab: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a,
+    type: 3}
   _pizzaSight: {fileID: 6837811382476731779}
   _playerRoot: {fileID: 0}
   _pizzaSightMeshRenderer: {fileID: 6056575672896579662}

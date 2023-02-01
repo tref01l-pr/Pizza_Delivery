@@ -7,7 +7,6 @@ namespace OnDeliveryDestinationScripts
     {
         private ScoreManager _scoreManager;
         private PizzaThrowing _pizzaThrowing;
-        private Transform _verification;
         
         private void Start()
         {
@@ -17,17 +16,12 @@ namespace OnDeliveryDestinationScripts
         private void OnCollisionEnter(Collision collision)
         {
             _pizzaThrowing.SetCanSpawnPizza(true);
-            _pizzaThrowing.SetIsPizza(false);
             _pizzaThrowing.EnableGravity();
             Destroy(transform.GetComponent<CheckCollision>());
+            Destroy(transform.GetComponent<PizzaMover>());
             if (collision.gameObject.CompareTag("Client"))
             {
-                _verification = collision.collider.transform;
-                while (_verification.name != "XBot")
-                {
-                    _verification = _verification.parent;
-                }
-                _verification.GetComponent<RagDollController>().MakePhysical();
+                FindClientRootAndMakePhysical(collision.collider.transform);
             }
         }
 
@@ -44,6 +38,16 @@ namespace OnDeliveryDestinationScripts
         public void Init(PizzaThrowing pizzaThrowing)
         {
             _pizzaThrowing = pizzaThrowing;
+        }
+
+        private void FindClientRootAndMakePhysical(Transform clientBone)
+        {
+            while (clientBone.name != "XBot")
+            {
+                clientBone = clientBone.parent;
+            }
+            
+            clientBone.GetComponent<RagDollController>().MakePhysical();
         }
     }
 }

@@ -32,7 +32,6 @@ namespace OnDeliveryDestinationScripts
                 _playerPositionController.SetNewPos(newPos);
                 _playerPositionController.SetIsRiding(false);
                 _pizzaThrowing.SetOnDestination(true);
-                _pizzaThrowing.SetPizzaSightSpawn(true);
 
                 FindNumberOfClients();
                 TurnOnDeliveryCamera();
@@ -60,7 +59,7 @@ namespace OnDeliveryDestinationScripts
         private void FindNumberOfClients()
         {
             _pizzaThrowing.SetNumberOfClients(_listOfClients.transform.childCount);
-            _pizzaThrowing.SetNumberOfThrowingChance(_pizzaThrowing.NumberOfClients * 2);
+            _pizzaThrowing.SetNumberOfThrowingChance(_pizzaThrowing.NumberOfClients * 2);   //как починить логику? В скрипте OnDestination может находится свойство с значением numberOfClients?
         }
     }
 }

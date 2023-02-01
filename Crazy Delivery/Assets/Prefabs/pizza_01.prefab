@@ -593,6 +593,7 @@ GameObject:
   - component: {fileID: 4949286742799519303}
   - component: {fileID: -2738158542918936993}
   - component: {fileID: -2737070460984076061}
+  - component: {fileID: 9114778326993555477}
   m_Layer: 0
   m_Name: pizza_01
   m_TagString: Pizza
@@ -664,6 +665,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 173c07b41ff7bea4caf79c81c0b5e90b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9114778326993555477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4390679083592924407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41a4317c4bbb0b142a3ee93cebbc5b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4419581781394098173

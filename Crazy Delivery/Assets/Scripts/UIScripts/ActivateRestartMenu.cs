@@ -16,10 +16,10 @@ public class ActivateRestartMenu : MonoBehaviour
 
     private void SavingHighScore()
     {
-        if (_scoreManager.score > PlayerPrefs.GetInt("HighScore", 0))
+        if (_scoreManager.Score > PlayerPrefs.GetInt("HighScore", 0))
         {
-            PlayerPrefs.SetInt("HighScore", _scoreManager.score);
-            highScore.text = _scoreManager.score.ToString();
+            PlayerPrefs.SetInt("HighScore", _scoreManager.Score);
+            highScore.text = _scoreManager.Score.ToString();
         }
     }
     
@@ -37,7 +37,7 @@ public class ActivateRestartMenu : MonoBehaviour
         {
             PlayerHood.enabled = false;
             RestartMenu.enabled = true;
-            scoreOnRestartMenu.text = _scoreManager.score.ToString();
+            scoreOnRestartMenu.text = _scoreManager.Score.ToString();
             SavingHighScore();
         }
     }

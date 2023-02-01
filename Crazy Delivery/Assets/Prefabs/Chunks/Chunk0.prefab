@@ -599,14 +599,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8386379e2778944ac45368e64f4699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pizza: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
+  _pizzaPrefab: {fileID: 4390679083592924407, guid: fa44f0d9a5a05314ea800e30dbcc564a,
+    type: 3}
   _pizzaSight: {fileID: 6056575672896579649}
-  _playerRoot: {fileID: 0}
   _pizzaSightMeshRenderer: {fileID: 6056575672896579662}
   _onDeliveryDestination: {fileID: 6056575673484448286}
-  _playerPositionController: {fileID: 0}
   _scoreManager: {fileID: 0}
-  rightSide: 1
 --- !u!1 &6056575673451164267
 GameObject:
   m_ObjectHideFlags: 0
@@ -5126,6 +5124,7 @@ PrefabInstance:
     - {fileID: -2737070460984076061, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
     - {fileID: -2738158542918936993, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
     - {fileID: 4949286742799519303, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
+    - {fileID: 9114778326993555477, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fa44f0d9a5a05314ea800e30dbcc564a, type: 3}
 --- !u!1001 &2988452732311305175
 PrefabInstance:

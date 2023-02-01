@@ -3,19 +3,19 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    public int score { get; set; }
+    public int Score { get; private set; }
 
     [SerializeField] private Text scoreText;
     
     public void AddPoint()
     {
-        score += 1;
-        scoreText.text = score.ToString();
+        Score += 1;
+        scoreText.text = Score.ToString();
     }
     
     private void Start()
     {
-        score = 0;
-        scoreText.text = score.ToString();
+        Score = 0;
+        scoreText.text = Score.ToString();
     }
 }

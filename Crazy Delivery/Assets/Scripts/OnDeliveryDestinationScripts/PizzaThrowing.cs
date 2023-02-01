@@ -4,25 +4,22 @@ namespace OnDeliveryDestinationScripts
 {
     public class PizzaThrowing : MonoBehaviour
     {
-        
-        [SerializeField] private GameObject _pizza;
-        [SerializeField] private GameObject _pizzaSight;
-        [SerializeField] private GameObject _playerRoot;
+        [SerializeField] private GameObject _pizzaPrefab;
+        [SerializeField] private GameObject _pizzaSight; 
         [SerializeField] private MeshRenderer _pizzaSightMeshRenderer;
         [SerializeField] private OnDeliveryDestination _onDeliveryDestination;
-        [SerializeField] private PlayerPositionController _playerPositionController;
         [SerializeField] private ScoreManager _scoreManager;
     
-        private float _speedRotationSight = 15;
-        private float _speedOfFlying = 30;
+        private float _speedRotationSight = 15f;
         private float _speedErroreEclusion;
         private int _numberOfThrowingChance;
         private bool _canSpawnPizza = true;
-        private bool _pizzaSightSpawn;
-        private bool _isPizza;
+        private bool _canSpawnPizzaSight = true;
         private bool _onDestination;
         private GameObject _pizzaSpawn;
-        private Vector3 _spawnPos;
+        private GameObject _player;
+        private Vector3 _spawnPosition;
+        private PlayerPositionController _playerPositionController;
 
         public int NumberOfClients { get; private set; }
 
@@ -30,11 +27,11 @@ namespace OnDeliveryDestinationScripts
         {
             _scoreManager = GameObject.Find("Score").GetComponent<ScoreManager>();
             _speedErroreEclusion = _speedRotationSight * 2;
-            _playerRoot = GameObject.Find("PushBikeWRagdoll");
-            _playerPositionController = _playerRoot.GetComponent<PlayerPositionController>();
+            _player = GameObject.Find("PushBikeWRagdoll");
+            _playerPositionController = _player.GetComponent<PlayerPositionController>();
             _playerPositionController.SetIsRiding(true);
-            _spawnPos = transform.position;
-            _spawnPos.y -= 0.5f;
+            _spawnPosition = transform.position;
+            _spawnPosition.y -= 0.5f;
             _pizzaSightMeshRenderer.enabled = false;
         }
 
@@ -42,7 +39,7 @@ namespace OnDeliveryDestinationScripts
         {
             if (_onDestination)
             {
-                SightRotation();
+                RotateSight();
             
                 if (_canSpawnPizza)
                 {
@@ -57,16 +54,7 @@ namespace OnDeliveryDestinationScripts
             }
         }
 
-        private void FixedUpdate()
-        {
-            if (_onDestination)
-            {
-                if (_isPizza)
-                {
-                    PizzaFly();
-                }
-            }
-        }
+        
         
         public void SetNumberOfThrowingChance(int numberOfThrowingChance)
         {
@@ -83,15 +71,11 @@ namespace OnDeliveryDestinationScripts
             _canSpawnPizza = canSpawnPizza;
         }
 
-        public void SetPizzaSightSpawn(bool pizzaSightSpawn)
+        /*public void SetPizzaSightSpawn(bool pizzaSightSpawn)
         {
-            _pizzaSightSpawn = pizzaSightSpawn;
-        }
-
-        public void SetIsPizza(bool isPizza)
-        {
-            _isPizza = isPizza;
-        }
+            _canSpawnPizzaSight = pizzaSightSpawn;
+        }*/
+        
 
         public void SetOnDestination(bool onDestination)
         {
@@ -111,46 +95,52 @@ namespace OnDeliveryDestinationScripts
                 _canSpawnPizza = false;
                 if (NumberOfClients > 0 && _numberOfThrowingChance >= 0)
                 {
-                    _pizzaSpawn = Instantiate(_pizza, _spawnPos, 
-                        Quaternion.Euler(0, _pizzaSight.transform.localEulerAngles.y, 0), transform.root);
-                    _pizzaSpawn.GetComponent<CheckCollision>().Init(this);
-                    _isPizza = true;
-                    _pizzaSpawn.GetComponent<Collider>().enabled = true;
+                    SpawnPizza();
                 }
             }
         }
-    
-        private void PizzaFly()
+
+        private void SpawnPizza()
         {
-            if (transform.position.z < 0)
-            {
-                _pizzaSpawn.transform.localPosition += _pizzaSpawn.transform.right * _speedOfFlying * Time.deltaTime;
-            }
-            else
-            {
-                _pizzaSpawn.transform.localPosition -= _pizzaSpawn.transform.right * _speedOfFlying * Time.deltaTime;
-            }
+            _pizzaSpawn = Instantiate(_pizzaPrefab, _spawnPosition, 
+                Quaternion.Euler(0, _pizzaSight.transform.localEulerAngles.y, 0), transform.root);
+            
+            _pizzaSpawn.GetComponent<CheckCollision>().Init(this);
+            _pizzaSpawn.GetComponent<Collider>().enabled = true;
         }
     
-        private void SightRotation()
+        
+        
+    
+        private void RotateSight()
         {
-            if (_pizzaSightSpawn)
+            SpawnPizzaSight();
+
+            AvoidInaccuracy();
+
+            _pizzaSight.transform.Rotate(Vector3.up * _speedRotationSight * Time.deltaTime);
+        }
+
+        private void SpawnPizzaSight()
+        {
+            if (_canSpawnPizzaSight)
             {
                 _pizzaSight.transform.localEulerAngles =
                     new Vector3(_pizzaSight.transform.localEulerAngles.x, 90, _pizzaSight.transform.localEulerAngles.z);
+                
                 _pizzaSightMeshRenderer.enabled = true;
-                _pizzaSightSpawn = false;
-            } 
-        
+                _canSpawnPizzaSight = false;
+            }
+        }
+
+        private void AvoidInaccuracy()
+        {
             if (_pizzaSight.transform.localEulerAngles.y < 75f || _pizzaSight.transform.localEulerAngles.y > 105f)
             {
                 _speedRotationSight = -_speedRotationSight;
                 _speedErroreEclusion = -_speedErroreEclusion;
                 _pizzaSight.transform.Rotate(Vector3.up * _speedErroreEclusion * Time.deltaTime);
             }
-        
-        
-            _pizzaSight.transform.Rotate(Vector3.up * _speedRotationSight * Time.deltaTime);
         }
 
         private void EndPizzaThrowing()
@@ -160,6 +150,7 @@ namespace OnDeliveryDestinationScripts
                 _scoreManager.AddPoint();
                 _numberOfThrowingChance--;
             }
+            
             _onDestination = false;
             _pizzaSightMeshRenderer.enabled = false;
             _onDeliveryDestination.TurnOnMainCamera();
