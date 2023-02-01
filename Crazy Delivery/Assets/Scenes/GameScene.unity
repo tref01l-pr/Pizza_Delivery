@@ -2317,6 +2317,11 @@ PrefabInstance:
       propertyPath: _chunkRoadSpawner
       value: 
       objectReference: {fileID: 2101824081}
+    - target: {fileID: 3761145115202529887, guid: ff6b301ff5b16134d91865043405cd3b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5000667918818250323, guid: ff6b301ff5b16134d91865043405cd3b,
         type: 3}
       propertyPath: m_Name
@@ -2442,5 +2447,9 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 250
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3761145115202529887, guid: ff6b301ff5b16134d91865043405cd3b, type: 3}
+    - {fileID: 3761145115868922562, guid: ff6b301ff5b16134d91865043405cd3b, type: 3}
+    - {fileID: 3761145116376282267, guid: ff6b301ff5b16134d91865043405cd3b, type: 3}
+    - {fileID: 3761145116484922367, guid: ff6b301ff5b16134d91865043405cd3b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ff6b301ff5b16134d91865043405cd3b, type: 3}
