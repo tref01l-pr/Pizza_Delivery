@@ -12,10 +12,10 @@ namespace EnvironmentScripts
         [SerializeField] private int _numberOfChunksBehindPlayer;
         [SerializeField] private ScoreManager _scoreManager;
         [SerializeField] private int _numberOfChunksOnStart;
+        [SerializeField] private GameObject _player;
         
 
         private int _сhunksBeforeStartRemoving;
-        private GameObject _player;
         private int _multiplier = 0;
         private Chunk _road;
 

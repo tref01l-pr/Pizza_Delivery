@@ -1957,6 +1957,7 @@ MonoBehaviour:
   _numberOfChunksBehindPlayer: 1
   _scoreManager: {fileID: 1260141080}
   _numberOfChunksOnStart: 2
+  _player: {fileID: 1092553836030116595}
 --- !u!4 &2101824082
 Transform:
   m_ObjectHideFlags: 0
