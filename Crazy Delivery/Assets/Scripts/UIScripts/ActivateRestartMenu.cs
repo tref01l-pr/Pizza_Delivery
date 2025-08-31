@@ -1,6 +1,6 @@
 using Gadd420;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ActivateRestartMenu : MonoBehaviour
@@ -35,12 +35,29 @@ public class ActivateRestartMenu : MonoBehaviour
     
     private void SavingHighScore()
     {
-        if (_scoreManager.Score > PlayerPrefs.GetInt("HighScore", 0))
+        if (PlayerManager.Instance != null)
         {
-            PlayerPrefs.SetInt("HighScore", _scoreManager.Score);
-            _highScore.text = _scoreManager.Score.ToString();
+            int currentBestScore = PlayerManager.Instance.GetCurrentScore();
+            
+            if (_scoreManager.Score > currentBestScore)
+            {
+                PlayerManager.Instance.UpdatePlayerScore(_scoreManager.Score);
+                Debug.Log($"New high score: {_scoreManager.Score}!");
+                _highScore.text = _scoreManager.Score.ToString();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Player not logged in - score not saved");
+            ShowLoginPrompt();
         }
     }
+
+    private void ShowLoginPrompt()
+    {
+        SceneManager.LoadScene(0);
+    }
+
 
     private void Reset()
     {

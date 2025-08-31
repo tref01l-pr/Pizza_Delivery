@@ -58,3 +58,17 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Firebase native libraries (large files)
+Crazy Delivery/Assets/Firebase/Plugins/x86_64/
+Crazy Delivery/Assets/Firebase/Plugins/iOS/
+Crazy Delivery/Assets/Firebase/Plugins/tvOS/
+Crazy Delivery/Assets/GeneratedLocalRepo/
+Crazy Delivery/Assets/Plugins/Android/FirebaseApp.androidlib/
+Crazy Delivery/Assets/ExternalDependencyManager/
+
+# Firebase plugins (regenerated automatically)
+Crazy Delivery/Assets/Firebase/Plugins/*.dll
+Crazy Delivery/Assets/Firebase/Plugins/*.bundle
+Crazy Delivery/Assets/Firebase/Plugins/*.so
+Crazy Delivery/Assets/Firebase/Plugins/*.a
+
