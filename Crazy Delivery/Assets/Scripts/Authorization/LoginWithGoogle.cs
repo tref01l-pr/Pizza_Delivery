@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
 using Firebase.Auth;
+using UIScripts;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
@@ -19,11 +20,7 @@ public class LoginWithGoogle : MonoBehaviour
     [Header("Persistence Settings")]
     public bool persistBetweenScenes = true;
 
-    [Header("UI Elements")]
-    public TextMeshProUGUI Username, UserEmail, ErrorMessage, StatusMessage;
-    public Image UserProfilePic;
-    public Button LoginButton, LogoutButton;
-    public GameObject LoadingPanel;
+    public LoadingScreenManager LoadingPanel;
 
     // Singleton pattern
     public static LoginWithGoogle Instance { get; private set; }
@@ -58,11 +55,10 @@ public class LoginWithGoogle : MonoBehaviour
         {
             InitFirebase();
             SubscribeToPlayerManagerEvents();
-            UpdateUIBasedOnLoginState();
         }
         catch (Exception e)
         {
-            ShowError($"Initialization failed: {e.Message}");
+            Debug.Log($"Initialization failed: {e.Message}");
         }
     }
 
@@ -96,147 +92,130 @@ public class LoginWithGoogle : MonoBehaviour
 
     private void HandlePlayerLoaded(User userData)
     {
-        Debug.Log($"Player loaded: {userData.username}");
-        UpdateUIWithUserData(userData);
-        SetLoadingState(false);
-        
-        if (StatusMessage != null)
-        {
-            string mode = PlayerManager.Instance.IsOnlineMode ? "Online" : "Offline";
-            string syncStatus = PlayerManager.Instance.HasUnsyncedData ? " (Unsynced)" : "";
-            StatusMessage.text = $"Logged in ({mode}){syncStatus}";
-        }
+        Debug.Log($"Player loaded: {userData.username}"); 
+        LoadingPanel.HideLoadingScreen();
     }
 
     private void HandlePlayerLoggedOut()
     {
         Debug.Log("Player logged out");
-        ClearUI();
-        UpdateUIBasedOnLoginState();
-        
-        if (StatusMessage != null)
-        {
-            StatusMessage.text = "Logged out";
-        }
     }
 
     private void HandlePlayerError(string error)
     {
-        ShowError(error);
-        SetLoadingState(false);
+        Debug.Log(error);
     }
 
     private void HandleConnectionStatusChanged(bool isOnline)
     {
         Debug.Log($"Connection status changed: {(isOnline ? "Online" : "Offline")}");
         
-        if (StatusMessage != null && PlayerManager.Instance != null && PlayerManager.Instance.IsLoggedIn)
+        if (PlayerManager.Instance != null && PlayerManager.Instance.IsLoggedIn)
         {
             string mode = isOnline ? "Online" : "Offline";
             string syncStatus = PlayerManager.Instance.HasUnsyncedData ? " (Unsynced)" : "";
-            StatusMessage.text = $"Logged in ({mode}){syncStatus}";
+            Debug.Log($"Logged in ({mode}){syncStatus}");
         }
     }
     #endregion
 
     #region Public Methods
-    public void Login()
+public void Login()
+{
+    if (isSigningIn)
     {
-        if (isSigningIn)
+        Debug.Log("Already signing in...");
+        return;
+    }
+
+    try
+    {
+        LoadingPanel.ShowLoadingScreen();
+        isSigningIn = true;
+
+#if UNITY_EDITOR
+        // В редакторе сразу вызываем успешную авторизацию
+        isSigningIn = false;
+        OnFirebaseAuthSuccess("editor_user_id", "Editor User");
+#else
+        // Выполняем реальную авторизацию Google
+        PerformRealGoogleSignIn();
+#endif
+    }
+    catch (Exception e)
+    {
+        Debug.LogError($"Login failed with exception: {e.Message}");
+        LoadingPanel.HideLoadingScreen();
+        isSigningIn = false;
+    }
+}
+
+    private void PerformRealGoogleSignIn()
+    {
+        if (!isGoogleSignInInitialized)
         {
-            Debug.Log("Already signing in...");
-            return;
-        }
-
-        try
-        {
-            SetLoadingState(true);
-            isSigningIn = true;
-            ClearMessages();
-
-            if (!isGoogleSignInInitialized)
-            {
-                GoogleSignIn.Configuration = new GoogleSignInConfiguration
-                {
-                    RequestIdToken = true,
-                    WebClientId = GoogleAPI,
-                    RequestEmail = true
-                };
-                isGoogleSignInInitialized = true;
-            }
-
             GoogleSignIn.Configuration = new GoogleSignInConfiguration
             {
                 RequestIdToken = true,
-                WebClientId = GoogleAPI
+                WebClientId = GoogleAPI,
+                RequestEmail = true
             };
-            GoogleSignIn.Configuration.RequestEmail = true;
-
-            Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
-
-            TaskCompletionSource<FirebaseUser> signInCompleted = new TaskCompletionSource<FirebaseUser>();
-            signIn.ContinueWith(task =>
-            {
-                if (task.IsCanceled)
-                {
-                    Debug.Log("Google Sign-In was cancelled");
-                    MainThreadDispatcher.Instance?.Enqueue(() => {
-                        ShowError("Sign-in was cancelled");
-                        SetLoadingState(false);
-                        isSigningIn = false;
-                    });
-                }
-                else if (task.IsFaulted)
-                {
-                    Debug.Log("Google Sign-In failed: " + task.Exception);
-                    MainThreadDispatcher.Instance?.Enqueue(() => {
-                        ShowError($"Sign-in failed: {GetReadableError(task.Exception)}");
-                        SetLoadingState(false);
-                        isSigningIn = false;
-                    });
-                }
-                else
-                {
-                    Debug.Log("Google Sign-In successful");
-                    
-                    // Аутентификация с Firebase
-                    Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential(
-                        ((Task<GoogleSignInUser>)task).Result.IdToken, null);
-                    
-                    auth.SignInWithCredentialAsync(credential).ContinueWith(authTask =>
-                    {
-                        if (authTask.IsCanceled)
-                        {
-                            MainThreadDispatcher.Instance?.Enqueue(() => {
-                                ShowError("Firebase authentication was cancelled");
-                                SetLoadingState(false);
-                                isSigningIn = false;
-                            });
-                        }
-                        else if (authTask.IsFaulted)
-                        {
-                            MainThreadDispatcher.Instance?.Enqueue(() => {
-                                ShowError($"Firebase authentication failed: {GetReadableError(authTask.Exception)}");
-                                SetLoadingState(false);
-                                isSigningIn = false;
-                            });
-                        }
-                        else
-                        {
-                            MainThreadDispatcher.Instance?.Enqueue(() => {
-                                OnFirebaseAuthSuccess(((Task<FirebaseUser>)authTask).Result);
-                            });
-                        }
-                    });
-                }
-            });
+            isGoogleSignInInitialized = true;
         }
-        catch (Exception e)
+
+        GoogleSignIn.Configuration = new GoogleSignInConfiguration
         {
-            ShowError($"Login error: {e.Message}");
-            SetLoadingState(false);
-            isSigningIn = false;
-        }
+            RequestIdToken = true,
+            WebClientId = GoogleAPI
+        };
+        GoogleSignIn.Configuration.RequestEmail = true;
+
+        Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
+
+        TaskCompletionSource<FirebaseUser> signInCompleted = new TaskCompletionSource<FirebaseUser>();
+        signIn.ContinueWith(task =>
+        {
+            if (task.IsCanceled)
+            {
+                signInCompleted.SetCanceled();
+                Debug.Log("Cancelled");
+                isSigningIn = false;
+            }
+            else if (task.IsFaulted)
+            {
+                signInCompleted.SetException(task.Exception);
+                isSigningIn = false;
+                Debug.Log("Faulted " + task.Exception);
+            }
+            else
+            {
+                Credential credential = GoogleAuthProvider.GetCredential(((Task<GoogleSignInUser>)task).Result.IdToken, null);
+                auth.SignInWithCredentialAsync(credential).ContinueWith(authTask =>
+                {
+                    if (authTask.IsCanceled)
+                    {
+                        signInCompleted.SetCanceled();
+                        isSigningIn = false;
+                    }
+                    else if (authTask.IsFaulted)
+                    {
+                        signInCompleted.SetException(authTask.Exception);
+                        isSigningIn = false;
+                        Debug.Log("Faulted In Auth " + task.Exception);
+                    }
+                    else
+                    {
+                        signInCompleted.SetResult(((Task<FirebaseUser>)authTask).Result);
+                        Debug.Log("Success");
+                        isSigningIn = false;
+                        user = auth.CurrentUser;
+                        OnFirebaseAuthSuccess(user.UserId, user.DisplayName);
+
+                        StartCoroutine(LoadImage(CheckImageUrl(user.PhotoUrl.ToString())));
+                    }
+                });
+            }
+        });
     }
 
     public void Logout()
@@ -249,14 +228,6 @@ public class LoginWithGoogle : MonoBehaviour
         GoogleSignIn.DefaultInstance.SignOut();
         
         user = null;
-        ClearUI();
-        ClearMessages();
-        
-        // Уведомляем PlayerManager о выходе
-        if (PlayerManager.Instance != null)
-        {
-            PlayerManager.Instance.LogoutPlayer();
-        }
         
         Debug.Log("User logged out");
     }
@@ -266,13 +237,6 @@ public class LoginWithGoogle : MonoBehaviour
         if (PlayerManager.Instance != null && PlayerManager.Instance.IsLoggedIn)
         {
             User currentUser = PlayerManager.Instance.CurrentUser;
-            if (Username != null) Username.text = currentUser.username;
-            if (UserEmail != null) UserEmail.text = user?.Email ?? "No email";
-        }
-        else
-        {
-            if (Username != null) Username.text = "Not logged in";
-            if (UserEmail != null) UserEmail.text = "";
         }
     }
 
@@ -291,123 +255,33 @@ public class LoginWithGoogle : MonoBehaviour
     {
         return user != null;
     }
-
-    /// <summary>
-    /// Обновляет UI элементы с новыми ссылками (для использования между сценами)
-    /// </summary>
-    public void UpdateUIReferences(TextMeshProUGUI username = null, TextMeshProUGUI userEmail = null, 
-                                   TextMeshProUGUI errorMessage = null, TextMeshProUGUI statusMessage = null,
-                                   Image userProfilePic = null, Button loginButton = null, 
-                                   Button logoutButton = null, GameObject loadingPanel = null)
-    {
-        if (username != null) Username = username;
-        if (userEmail != null) UserEmail = userEmail;
-        if (errorMessage != null) ErrorMessage = errorMessage;
-        if (statusMessage != null) StatusMessage = statusMessage;
-        if (userProfilePic != null) UserProfilePic = userProfilePic;
-        if (loginButton != null) LoginButton = loginButton;
-        if (logoutButton != null) LogoutButton = logoutButton;
-        if (loadingPanel != null) LoadingPanel = loadingPanel;
-
-        // Обновляем UI с текущим состоянием
-        UpdateUIBasedOnLoginState();
-        
-        // Если пользователь вошел, обновляем данные
-        if (PlayerManager.Instance != null && PlayerManager.Instance.IsLoggedIn)
-        {
-            UpdateUIWithUserData(PlayerManager.Instance.CurrentUser);
-        }
-    }
     #endregion
 
     #region Private Methods
-    private void OnFirebaseAuthSuccess(FirebaseUser firebaseUser)
+    private void OnFirebaseAuthSuccess(string userId, string displayName)
     {
-        user = firebaseUser;
-        
-        // Обновляем UI с данными Firebase
-        UpdateUIWithFirebaseData();
-        
-        // Загружаем аватар если есть
-        if (user.PhotoUrl != null)
-        {
-            StartCoroutine(LoadImage(user.PhotoUrl.ToString()));
-        }
-
         // Уведомляем PlayerManager о входе
         if (PlayerManager.Instance != null)
         {
             PlayerManager.Instance.OnGoogleLoginSuccess(
-                user.UserId,
-                user.DisplayName ?? "Unknown Player"
+                userId,
+                displayName ?? "Unknown Player"
             );
         }
         else
         {
             Debug.LogError("PlayerManager.Instance is null!");
-            ShowError("PlayerManager not available");
-            SetLoadingState(false);
+            LoadingPanel.HideLoadingScreen();
         }
 
         isSigningIn = false;
     }
+    
 
-    private void UpdateUIWithFirebaseData()
-    {
-        if (Username != null) Username.text = user.DisplayName ?? "Unknown";
-        if (UserEmail != null) UserEmail.text = user.Email ?? "No email";
-        
-        Debug.Log($"Firebase Auth Success - User: {user.DisplayName}, Email: {user.Email}, ID: {user.UserId}");
-    }
-
-    private void UpdateUIWithUserData(User userData)
-    {
-        if (Username != null) Username.text = userData.username;
-        if (UserEmail != null) UserEmail.text = user?.Email ?? "No email";
-        
-        UpdateUIBasedOnLoginState();
-    }
-
-    private void UpdateUIBasedOnLoginState()
-    {
-        bool isLoggedIn = PlayerManager.Instance != null && PlayerManager.Instance.IsLoggedIn;
-        
-        if (LoginButton != null) LoginButton.gameObject.SetActive(!isLoggedIn);
-        if (LogoutButton != null) LogoutButton.gameObject.SetActive(isLoggedIn);
-        
-        if (!isLoggedIn)
-        {
-            if (Username != null) Username.text = "Not logged in";
-            if (UserEmail != null) UserEmail.text = "";
-        }
-    }
+    
     #endregion
 
     #region Helper Methods
-    private void SetLoadingState(bool isLoading)
-    {
-        if (LoadingPanel != null) LoadingPanel.SetActive(isLoading);
-        if (LoginButton != null) LoginButton.interactable = !isLoading;
-    }
-
-    private void ShowError(string error)
-    {
-        if (ErrorMessage != null) ErrorMessage.text = error;
-        Debug.LogError(error);
-    }
-
-    private void ClearMessages()
-    {
-        if (ErrorMessage != null) ErrorMessage.text = "";
-        if (StatusMessage != null) StatusMessage.text = "";
-    }
-
-    private void ClearUI()
-    {
-        if (Username != null) Username.text = "";
-        if (UserEmail != null) UserEmail.text = "";
-        if (UserProfilePic != null) UserProfilePic.sprite = null;
-    }
 
     private string GetReadableError(Exception exception)
     {
@@ -445,14 +319,7 @@ public class LoginWithGoogle : MonoBehaviour
             Texture2D texture = DownloadHandlerTexture.GetContent(www);
             Debug.Log("Profile image loaded successfully");
             
-            if (UserProfilePic != null)
-            {
-                UserProfilePic.sprite = Sprite.Create(
-                    texture, 
-                    new Rect(0, 0, texture.width, texture.height), 
-                    new Vector2(0.5f, 0.5f)
-                );
-            }
+            
         }
         else
         {

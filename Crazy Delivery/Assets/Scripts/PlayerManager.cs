@@ -1,12 +1,16 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using UIScripts;
 
 public class PlayerManager : MonoBehaviour
 {
     [Header("Dependencies")]
     [SerializeField] private DatabaseManager databaseManager;
     [SerializeField] private LoginWithGoogle loginWithGoogle;
+    [SerializeField] private LoadingScreenManager loadingScreenManager;
+    
+    [SerializeField] private MainMenu mainMenu;
     
     public static PlayerManager Instance { get; private set; }
 
@@ -28,7 +32,7 @@ public class PlayerManager : MonoBehaviour
     public event Action<string> OnPlayerError;
     public event Action<int> OnScoreUpdated;
     public event Action<bool> OnConnectionStatusChanged;
-
+    
     // Properties
     public User CurrentUser => currentUser;
     public bool IsLoggedIn => isLoggedIn;
@@ -37,13 +41,13 @@ public class PlayerManager : MonoBehaviour
     public bool HasUnsyncedData => hasUnsyncedData;
 
     // PlayerPrefs Keys
-    private const string PREF_USER_GOOGLE_ID = "UserGoogleId";
-    private const string PREF_USERNAME = "Username";
-    private const string PREF_USER_SCORE = "UserScore";
-    private const string PREF_LAST_UPDATED = "LastUpdated";
-    private const string PREF_CREATED_AT = "CreatedAt";
-    private const string PREF_IS_LOGGED_IN = "IsLoggedIn";
-    private const string PREF_HAS_UNSYNCED_DATA = "HasUnsyncedData";
+    public const string PREF_USER_GOOGLE_ID = "UserGoogleId";
+    public const string PREF_USERNAME = "Username";
+    public const string PREF_USER_SCORE = "UserScore";
+    public const string PREF_LAST_UPDATED = "LastUpdated";
+    public const string PREF_CREATED_AT = "CreatedAt";
+    public const string PREF_IS_LOGGED_IN = "IsLoggedIn";
+    public const string PREF_HAS_UNSYNCED_DATA = "HasUnsyncedData";
 
     void Awake()
     {
@@ -172,6 +176,8 @@ public class PlayerManager : MonoBehaviour
         {
             Debug.Log("No saved user found, user needs to login.");
             SetLoginState(false);
+            loadingScreenManager?.HideLoadingScreen();
+            mainMenu?.ShowLoginMenu();
             return;
         }
 
@@ -197,6 +203,9 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log($"User loaded from PlayerPrefs: {username} (Score: {score}, Unsynced: {hasUnsyncedData})");
         OnPlayerLoaded?.Invoke(currentUser);
+        LoadLeaderboard();
+        loadingScreenManager?.HideLoadingScreen();
+        mainMenu?.ShowMainMenu();
     }
 
     /// <summary>
@@ -257,6 +266,7 @@ public class PlayerManager : MonoBehaviour
             if (databaseManager != null)
             {
                 databaseManager.SignInWithGoogleId(googleId, username, 0);
+                LoadLeaderboard();
             }
         }
         else
@@ -278,6 +288,8 @@ public class PlayerManager : MonoBehaviour
 
         SaveUserToPlayerPrefs();
         OnPlayerLoaded?.Invoke(currentUser);
+        loadingScreenManager?.HideLoadingScreen();
+        mainMenu?.ShowMainMenu();
 
         Debug.Log($"Offline user created: {username}");
     }
@@ -424,6 +436,9 @@ public class PlayerManager : MonoBehaviour
 
         SaveUserToPlayerPrefs();
         OnPlayerLoaded?.Invoke(user);
+        LoadLeaderboard();
+        loadingScreenManager?.HideLoadingScreen();
+        mainMenu?.ShowMainMenu();
     }
 
     private void HandleDatabaseError(string error)

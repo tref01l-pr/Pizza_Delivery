@@ -18,7 +18,7 @@ public class ActivateRestartMenu : MonoBehaviour
     {
         _playerHood.enabled = true;
         _restartMenu.enabled = false;
-        _highScore.text = PlayerPrefs.GetInt("HighScore", 0).ToString();
+        _highScore.text = PlayerPrefs.GetInt(PlayerManager.PREF_USER_SCORE, 0).ToString();
     }
 
     private void Update()
