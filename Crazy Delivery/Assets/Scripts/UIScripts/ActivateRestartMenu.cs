@@ -1,3 +1,4 @@
+using System.Collections;
 using Gadd420;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ public class ActivateRestartMenu : MonoBehaviour
     [SerializeField] private Text _scoreOnRestartMenu;
     [SerializeField] private Text _highScore;
 
+    private bool _crashHandled = false;
     private void Start()
     {
         _playerHood.enabled = true;
@@ -25,14 +27,22 @@ public class ActivateRestartMenu : MonoBehaviour
     private void Update()
     {
         //Reset();
-        if (_rbController.isCrashed)
+        if (_rbController.isCrashed && !_crashHandled)
         {
-            _playerHood.enabled = false;
-            _restartMenu.enabled = true;
-            _scoreOnRestartMenu.text = _scoreManager.Score.ToString();
-            SavingHighScore();
-            
+            _crashHandled = true;
+            StartCoroutine(HandleCrashWithDelay());
         }
+    }
+
+    private IEnumerator HandleCrashWithDelay()
+    {
+        _playerHood.enabled = false;
+        _scoreOnRestartMenu.text = _scoreManager.Score.ToString();
+        SavingHighScore();
+        
+        yield return new WaitForSeconds(0.3f);
+    
+        _restartMenu.enabled = true;
     }
     
     private void SavingHighScore()
@@ -47,7 +57,7 @@ public class ActivateRestartMenu : MonoBehaviour
                 Debug.Log($"New high score: {_scoreManager.Score}!");
                 _highScore.text = _scoreManager.Score.ToString();
             }
-            _leaderBoard.InitializeLeaderboard(currentBestScore);
+            _leaderBoard.InitializeLeaderboard(PlayerManager.Instance.GetCurrentScore());
         }
         else
         {

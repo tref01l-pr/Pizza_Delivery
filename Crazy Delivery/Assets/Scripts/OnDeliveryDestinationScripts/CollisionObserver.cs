@@ -25,9 +25,7 @@ namespace OnDeliveryDestinationScripts
         {
             if (collision.gameObject.CompareTag("ClientTrigger"))
             {
-                _pizzaThrowing.SetNumberOfClients(_pizzaThrowing.NumberOfClients - 1);
-                _scoreManager.AddPoint();
-                Destroy(collision);
+                
             }
         }
         
@@ -43,8 +41,13 @@ namespace OnDeliveryDestinationScripts
             {
                 clientBone = clientBone.parent;
             }
-            
-            clientBone.GetComponent<RagDollController>().MakePhysical();
+            var isPhysical = clientBone.GetComponent<RagDollController>();
+            if (!isPhysical.IsPhysical)
+            {
+                isPhysical.MakePhysical();
+                _pizzaThrowing.SetNumberOfClients(_pizzaThrowing.NumberOfClients - 1);
+                _scoreManager.AddPoint();
+            }
         }
     }
 }

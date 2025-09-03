@@ -77,8 +77,14 @@ public class PlayerManager : MonoBehaviour
     {
         if (autoLoginOnStart)
         {
-            InitializePlayer();
+            StartCoroutine(InitializePlayerWithDelay());
         }
+    }
+
+    IEnumerator InitializePlayerWithDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        InitializePlayer();
     }
 
     #region Initialization
@@ -338,6 +344,11 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
+        if (currentUser.score >= newScore)
+        {
+            return;
+        }
+
         Debug.Log($"Updating score for {currentUser?.username}: {newScore}");
         
         // Обновляем локально
@@ -454,6 +465,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     /// <summary>
     /// Загружает лидерборд (только онлайн)
     /// </summary>

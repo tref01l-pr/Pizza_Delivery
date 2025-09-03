@@ -22,7 +22,7 @@ public class LeaderBoard : MonoBehaviour
         DatabaseManager.Instance.OnLeaderboardLoaded += HandleLeaderboardLoaded;
     }
 
-    public void InitializeLeaderboard(int currentBestScore)
+    public async void InitializeLeaderboard(int currentBestScore)
     {
         if (_isInitialized)
         {
@@ -42,9 +42,24 @@ public class LeaderBoard : MonoBehaviour
         
         if (_users == null || _users.Count == 0 || currentBestScore <= 0)
         {
-            _infoMessage.text = "No leaderboard data available.";
-            _infoMessage.gameObject.SetActive(true);
-            return;
+            try
+            {
+                _users = (await DatabaseManager.Instance.LoadLeaderboard())
+                    .Where(u => u.score > 0)
+                    .OrderByDescending(u => u.score)
+                    .ToList();
+                if (_users == null || _users.Count == 0 || currentBestScore <= 0)
+                {
+                    _infoMessage.text = "No leaderboard data available.";
+                    _infoMessage.gameObject.SetActive(true);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         var currentUserInLeaderBoard = _users.FirstOrDefault(u => PlayerManager.Instance.CurrentUser != null && 

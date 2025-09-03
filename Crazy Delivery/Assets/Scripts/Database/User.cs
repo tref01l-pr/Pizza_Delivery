@@ -23,6 +23,10 @@ public class User
     /// </summary>
     public void UpdateScore(int newScore)
     {
+        if (score >= newScore)
+        {
+            return;
+        }
         this.score = newScore;
         this.lastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
     }

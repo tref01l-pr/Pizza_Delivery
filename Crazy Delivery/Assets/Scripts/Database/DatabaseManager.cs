@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Firebase;
 using Firebase.Database;
 using TMPro;
@@ -43,8 +44,7 @@ public class DatabaseManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
-            return;
+            Destroy(gameObject); 
         }
     }
 
@@ -56,7 +56,6 @@ public class DatabaseManager : MonoBehaviour
     #region Firebase Initialization
     private void InitializeFirebase()
     {
-        // Проверяем доступность интернета перед инициализацией Firebase
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
             Debug.Log("No internet connection - Firebase will not be initialized");
@@ -78,7 +77,6 @@ public class DatabaseManager : MonoBehaviour
                     _isFirebaseAvailable = true;
                     Debug.Log("Firebase Database initialized successfully");
                     
-                    // Уведомляем об успешной инициализации в главном потоке
                     MainThreadDispatcher.Instance?.Enqueue(() => {
                         OnFirebaseStatusChanged?.Invoke(true);
                     });
@@ -340,65 +338,65 @@ public class DatabaseManager : MonoBehaviour
     /// <summary>
     /// Получение топ-10 игроков по очкам (только онлайн)
     /// </summary>
-    public void LoadLeaderboard()
+    public async Task<List<User>> LoadLeaderboard()
     {
         if (!IsFirebaseReady)
         {
             OnError?.Invoke("Leaderboard requires internet connection");
-            return;
+            return new List<User>();
         }
 
-        StartCoroutine(LoadLeaderboardCoroutine());
+        return await LoadLeaderboardAsync();
     }
 
-    private IEnumerator LoadLeaderboardCoroutine()
+    private async Task<List<User>> LoadLeaderboardAsync()
     {
         Debug.Log("Loading leaderboard...");
 
         if (!IsFirebaseReady)
         {
             OnError?.Invoke("Firebase connection lost during leaderboard load");
-            yield break;
+            return null;
         }
 
         var query = _databaseReference.Child("users")
             .OrderByChild("score")
             .LimitToLast(10);
 
-        var task = query.GetValueAsync();
-        yield return new WaitUntil(() => task.IsCompleted);
-
-        if (task.Exception != null)
+        try
         {
-            Debug.LogError($"Leaderboard query failed: {task.Exception}");
-            HandleDatabaseException(task.Exception);
-            yield break;
-        }
+            DataSnapshot snapshot = await query.GetValueAsync();
+            List<User> leaderboard = new List<User>();
 
-        DataSnapshot snapshot = task.Result;
-        List<User> leaderboard = new List<User>();
-
-        if (snapshot.Exists)
-        {
-            foreach (DataSnapshot userSnapshot in snapshot.Children)
+            if (snapshot.Exists)
             {
-                try
+                foreach (DataSnapshot userSnapshot in snapshot.Children)
                 {
-                    User user = JsonUtility.FromJson<User>(userSnapshot.GetRawJsonValue());
-                    leaderboard.Add(user);
+                    try
+                    {
+                        User user = JsonUtility.FromJson<User>(userSnapshot.GetRawJsonValue());
+                        leaderboard.Add(user);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning($"Failed to parse user data: {e.Message}");
+                    }
                 }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"Failed to parse user data: {e.Message}");
-                }
+
+                leaderboard = leaderboard.OrderByDescending(u => u.score).ToList();
             }
 
-            leaderboard = leaderboard.OrderByDescending(u => u.score).ToList();
+            Debug.Log($"Leaderboard loaded: {leaderboard.Count} entries");
+            _leaderboardCache = leaderboard;
+            OnLeaderboardLoaded?.Invoke(leaderboard);
+            return leaderboard;
         }
-
-        Debug.Log($"Leaderboard loaded: {leaderboard.Count} entries");
-        _leaderboardCache = leaderboard;
-        OnLeaderboardLoaded?.Invoke(leaderboard);
+        catch (Exception ex)
+        {
+            Debug.LogError($"Leaderboard query failed: {ex}");
+            HandleDatabaseException(ex);
+            return null;
+        }
     }
     #endregion
 
