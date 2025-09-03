@@ -131,10 +131,8 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log("Initializing player...");
         
-        // Сначала пытаемся загрузить из PlayerPrefs
         LoadUserFromPlayerPrefs();
         
-        // Если пользователь был сохранен и есть интернет, синхронизируем с сервером
         if (isLoggedIn && isOnlineMode)
         {
             SyncWithServer();
@@ -143,7 +141,6 @@ public class PlayerManager : MonoBehaviour
 
     private void CheckConnectionStatus()
     {
-        // Проверяем состояние интернета и Firebase
         bool hasInternet = Application.internetReachability != NetworkReachability.NotReachable;
         bool firebaseAvailable = databaseManager != null && databaseManager.IsFirebaseReady;
         
@@ -155,13 +152,11 @@ public class PlayerManager : MonoBehaviour
             Debug.Log($"Connection status changed: {(isOnlineMode ? "Online" : "Offline")}");
             OnConnectionStatusChanged?.Invoke(isOnlineMode);
             
-            // Если стали онлайн и есть несинхронизированные данные
             if (isOnlineMode && hasUnsyncedData && isLoggedIn)
             {
                 SyncWithServer();
             }
             
-            // Если потеряли соединение, проверяем Firebase
             if (!isOnlineMode && hasInternet && databaseManager != null)
             {
                 databaseManager.CheckConnectionStatus();
@@ -171,9 +166,6 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region PlayerPrefs Management
-    /// <summary>
-    /// Загружает данные пользователя из PlayerPrefs
-    /// </summary>
     private void LoadUserFromPlayerPrefs()
     {
         string savedGoogleId = PlayerPrefs.GetString(PREF_USER_GOOGLE_ID, string.Empty);
@@ -188,14 +180,12 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
-        // Восстанавливаем данные пользователя из PlayerPrefs
         string username = PlayerPrefs.GetString(PREF_USERNAME, "Guest");
         int score = PlayerPrefs.GetInt(PREF_USER_SCORE, 0);
         long lastUpdated = long.Parse(PlayerPrefs.GetString(PREF_LAST_UPDATED, "0"));
         string createdAt = PlayerPrefs.GetString(PREF_CREATED_AT, DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
         hasUnsyncedData = PlayerPrefs.GetInt(PREF_HAS_UNSYNCED_DATA, 0) == 1;
 
-        // Создаем объект пользователя
         currentUser = new User
         {
             username = username,
@@ -214,10 +204,7 @@ public class PlayerManager : MonoBehaviour
         loadingScreenManager?.HideLoadingScreen();
         mainMenu?.ShowMainMenu();
     }
-
-    /// <summary>
-    /// Сохраняет данные пользователя в PlayerPrefs
-    /// </summary>
+    
     private void SaveUserToPlayerPrefs()
     {
         if (currentUser == null)
@@ -237,10 +224,7 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log($"User data saved to PlayerPrefs: {currentUser.username}");
     }
-
-    /// <summary>
-    /// Очищает сохраненные данные пользователя
-    /// </summary>
+    
     private void ClearPlayerPrefs()
     {
         PlayerPrefs.DeleteKey(PREF_USER_GOOGLE_ID);
@@ -257,9 +241,6 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region User Management
-    /// <summary>
-    /// Вызывается после успешного Google Login
-    /// </summary>
     public void OnGoogleLoginSuccess(string googleId, string username)
     {
         Debug.Log($"Google login successful: {username} ({googleId})");
@@ -269,7 +250,6 @@ public class PlayerManager : MonoBehaviour
 
         if (isOnlineMode)
         {
-            // Онлайн режим - синхронизируемся с сервером
             if (databaseManager != null)
             {
                 databaseManager.SignInWithGoogleId(googleId, username, 0);
@@ -278,20 +258,16 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
-            // Офлайн режим - создаем пользователя локально
             CreateOfflineUser(googleId, username, 0);
         }
     }
-
-    /// <summary>
-    /// Создает пользователя в офлайн режиме
-    /// </summary>
+    
     private void CreateOfflineUser(string googleId, string username, int score)
     {
         currentUser = new User(username, googleId, score);
         currentGoogleId = googleId;
         SetLoginState(true);
-        hasUnsyncedData = true; // Помечаем, что данные нужно синхронизировать
+        hasUnsyncedData = true;
 
         SaveUserToPlayerPrefs();
         OnPlayerLoaded?.Invoke(currentUser);
@@ -300,10 +276,7 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log($"Offline user created: {username}");
     }
-
-    /// <summary>
-    /// Синхронизирует локальные данные с сервером
-    /// </summary>
+    
     private void SyncWithServer()
     {
         if (!isOnlineMode || databaseManager == null || string.IsNullOrEmpty(currentGoogleId))
@@ -313,24 +286,21 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log("Syncing with server...");
         
-        // Загружаем данные с сервера
         StartCoroutine(SyncCoroutine());
     }
 
     private IEnumerator SyncCoroutine()
     {
-        yield return new WaitForSeconds(0.5f); // Небольшая задержка для инициализации
+        yield return new WaitForSeconds(0.5f);
 
         if (databaseManager != null)
         {
             if (hasUnsyncedData && currentUser != null)
             {
-                // Если есть несинхронизированные данные, отправляем их на сервер
                 databaseManager.SignInWithGoogleId(currentGoogleId, currentUser.username, currentUser.score);
             }
             else
             {
-                // Просто загружаем данные с сервера
                 databaseManager.SignInWithGoogleId(currentGoogleId, "", 0);
             }
         }
@@ -351,24 +321,20 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log($"Updating score for {currentUser?.username}: {newScore}");
         
-        // Обновляем локально
         if (currentUser != null)
         {
             currentUser.UpdateScore(newScore);
         }
 
-        // Сохраняем в PlayerPrefs
         SaveUserToPlayerPrefs();
 
         if (isOnlineMode && databaseManager != null)
         {
-            // Онлайн - отправляем на сервер
             databaseManager.UpdateUserScore(currentGoogleId, newScore);
             hasUnsyncedData = false;
         }
         else
         {
-            // Офлайн - помечаем для синхронизации
             hasUnsyncedData = true;
             SaveUserToPlayerPrefs();
             Debug.Log("Score updated offline, will sync when online");
@@ -376,10 +342,7 @@ public class PlayerManager : MonoBehaviour
 
         OnScoreUpdated?.Invoke(newScore);
     }
-
-    /// <summary>
-    /// Выход из аккаунта
-    /// </summary>
+    
     public void LogoutPlayer()
     {
         StartCoroutine(LogoutCoroutine());
@@ -389,10 +352,6 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log("Starting logout process");
     
-        // Отключаем DontDestroyOnLoad ПЕРЕД удалением
-        //DisablePersistence();
-    
-        // Очищаем данные
         ClearPlayerPrefs();
         currentUser = null;
         currentGoogleId = string.Empty;
@@ -424,19 +383,15 @@ public class PlayerManager : MonoBehaviour
     
         OnPlayerLoggedOut?.Invoke();
     
-        // Ждем один кадр, чтобы Destroy() успел сработать
         yield return null;
     
-        // Теперь удаляем себя
         if (SceneManager.GetActiveScene().buildIndex != 0)
         {
             DestroyInstance();
         }
     
-        // Еще одна задержка перед загрузкой сцены
         yield return null;
     
-        // Теперь безопасно загружать сцену
         if (SceneManager.GetActiveScene().buildIndex != 0)
         {
             SceneManager.LoadScene(0);
@@ -464,11 +419,7 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("PlayerManager instance destroyed");
         }
     }
-
-    // ReSharper disable Unity.PerformanceAnalysis
-    /// <summary>
-    /// Загружает лидерборд (только онлайн)
-    /// </summary>
+    
     public void LoadLeaderboard()
     {
         if (!isOnlineMode)
@@ -493,10 +444,8 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log($"User loaded from database: {user.username}, Score: {user.score}");
         
-        // Сравниваем с локальными данными
         if (currentUser != null && hasUnsyncedData)
         {
-            // Если локальный счет больше, обновляем сервер
             if (currentUser.score > user.score)
             {
                 Debug.Log($"Local score ({currentUser.score}) is higher than server ({user.score}), updating server");
@@ -521,8 +470,6 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.LogError($"Database error: {error}");
         
-        // При ошибке базы данных не всегда нужно переключаться в офлайн
-        // Только если это ошибка соединения
         if (error.ToLower().Contains("connection") || 
             error.ToLower().Contains("network") || 
             error.ToLower().Contains("offline"))
@@ -542,10 +489,8 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log($"Firebase status changed: {(firebaseReady ? "Ready" : "Not Ready")}");
         
-        // Обновляем статус соединения
         CheckConnectionStatus();
         
-        // Если Firebase стал доступен и есть несинхронизированные данные
         if (firebaseReady && hasUnsyncedData && isLoggedIn)
         {
             Debug.Log("Firebase became available, syncing unsynced data");
@@ -598,23 +543,18 @@ public class PlayerManager : MonoBehaviour
             HandlePlayerError("No current user to refresh");
         }
     }
-
-    /// <summary>
-    /// Принудительная синхронизация с сервером
-    /// </summary>
+    
     public void ForceSyncWithServer()
     {
         CheckConnectionStatus();
         
         if (!isOnlineMode)
         {
-            // Пытаемся переподключиться к Firebase
             if (databaseManager != null)
             {
                 databaseManager.CheckAndReinitializeFirebase();
             }
             
-            // Проверяем статус еще раз после попытки переподключения
             CheckConnectionStatus();
         }
         
@@ -633,8 +573,7 @@ public class PlayerManager : MonoBehaviour
     #region Unity Lifecycle
     void Update()
     {
-        // Периодически проверяем статус соединения
-        if (Time.frameCount % 300 == 0) // Каждые 5 секунд при 60 FPS
+        if (Time.frameCount % 300 == 0)
         {
             CheckConnectionStatus();
         }

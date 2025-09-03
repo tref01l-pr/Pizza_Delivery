@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Database;
-using TMPro;
 using UnityEngine;
 
 public class DatabaseManager : MonoBehaviour
@@ -17,12 +16,6 @@ public class DatabaseManager : MonoBehaviour
     private bool _isFirebaseReady = false;
     private bool _isFirebaseAvailable = false;
     private List<User> _leaderboardCache = new List<User>();
-
-    [Header("UI References (Optional)")]
-    public TMP_InputField NameInputField;
-    public TMP_InputField ScoreInputField;
-    public TextMeshProUGUI NameText;
-    public TextMeshProUGUI ScoreText;
 
     // Events
     public event Action<User> OnUserLoaded;
@@ -106,10 +99,7 @@ public class DatabaseManager : MonoBehaviour
             }
         });
     }
-
-    /// <summary>
-    /// Проверяет и переинициализирует Firebase при восстановлении соединения
-    /// </summary>
+    
     public void CheckAndReinitializeFirebase()
     {
         if (!_isFirebaseReady && Application.internetReachability != NetworkReachability.NotReachable)
@@ -121,13 +111,8 @@ public class DatabaseManager : MonoBehaviour
     #endregion
 
     #region User Authentication & Management
-    /// <summary>
-    /// Главный метод входа в аккаунт по googleAuthenticationId
-    /// Работает только при наличии Firebase соединения
-    /// </summary>
     public void SignInWithGoogleId(string googleAuthenticationId, string fallbackUsername = "", int fallbackScore = 0)
     {
-        // Проверяем доступность Firebase
         if (!IsFirebaseReady)
         {
             string errorMessage = _isFirebaseAvailable ? "Firebase not ready" : "No internet connection";
@@ -143,7 +128,6 @@ public class DatabaseManager : MonoBehaviour
     {
         Debug.Log($"Attempting sign in with Google ID: {googleAuthenticationId}");
 
-        // Дополнительная проверка соединения перед запросом
         if (!IsFirebaseReady)
         {
             OnError?.Invoke("Firebase connection lost during sign in");
@@ -193,9 +177,6 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Загружает пользователя по googleAuthenticationId (для автологина)
-    /// </summary>
     public void LoadUser(string googleAuthenticationId)
     {
         if (!IsFirebaseReady)
@@ -289,9 +270,6 @@ public class DatabaseManager : MonoBehaviour
     #endregion
 
     #region Score Management
-    /// <summary>
-    /// Обновление счета пользователя
-    /// </summary>
     public void UpdateUserScore(string googleAuthenticationId, int newScore)
     {
         if (!IsFirebaseReady)
@@ -312,7 +290,6 @@ public class DatabaseManager : MonoBehaviour
             yield break;
         }
 
-        // Обновляем и счет, и timestamp
         var updates = new Dictionary<string, object>
         {
             ["score"] = newScore,
@@ -335,9 +312,6 @@ public class DatabaseManager : MonoBehaviour
     #endregion
 
     #region Leaderboard
-    /// <summary>
-    /// Получение топ-10 игроков по очкам (только онлайн)
-    /// </summary>
     public async Task<List<User>> LoadLeaderboard()
     {
         if (!IsFirebaseReady)
@@ -405,7 +379,6 @@ public class DatabaseManager : MonoBehaviour
     {
         string errorMessage = GetReadableError(exception);
         
-        // Проверяем, не связана ли ошибка с потерей соединения
         if (IsConnectionError(exception))
         {
             Debug.LogWarning("Database connection error detected, marking Firebase as unavailable");
@@ -441,9 +414,6 @@ public class DatabaseManager : MonoBehaviour
     #endregion
 
     #region Connection Management
-    /// <summary>
-    /// Проверяет статус соединения и переинициализирует Firebase при необходимости
-    /// </summary>
     public void CheckConnectionStatus()
     {
         bool hasInternet = Application.internetReachability != NetworkReachability.NotReachable;
@@ -461,10 +431,7 @@ public class DatabaseManager : MonoBehaviour
             OnFirebaseStatusChanged?.Invoke(false);
         }
     }
-
-    /// <summary>
-    /// Проверяет, может ли Firebase выполнить операцию
-    /// </summary>
+    
     public bool CanPerformFirebaseOperation()
     {
         return IsFirebaseReady && Application.internetReachability != NetworkReachability.NotReachable;
@@ -474,8 +441,7 @@ public class DatabaseManager : MonoBehaviour
     #region Unity Lifecycle
     void Update()
     {
-        // Периодически проверяем статус соединения
-        if (Time.frameCount % 600 == 0) // Каждые 10 секунд при 60 FPS
+        if (Time.frameCount % 600 == 0)
         {
             CheckConnectionStatus();
         }

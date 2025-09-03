@@ -3,10 +3,8 @@ using System.Collections;
 using Google;
 using System.Threading.Tasks;
 using UnityEngine;
-using TMPro;
 using Firebase.Auth;
 using UIScripts;
-using UnityEngine.UI;
 using UnityEngine.Networking;
 
 public class LoginWithGoogle : MonoBehaviour
@@ -134,11 +132,9 @@ public class LoginWithGoogle : MonoBehaviour
             isSigningIn = true;
 
 #if UNITY_EDITOR
-        // В редакторе сразу вызываем успешную авторизацию
             isSigningIn = false;
             OnFirebaseAuthSuccess("editor_user_id", "Editor User");
 #else
-            // Выполняем реальную авторизацию Google
             PerformRealGoogleSignIn();
 #endif
         }
@@ -148,7 +144,7 @@ public class LoginWithGoogle : MonoBehaviour
             LoadingPanel.HideLoadingScreen();
             isSigningIn = false;
         }
-}
+    }
 
     private void PerformRealGoogleSignIn()
     {
@@ -189,7 +185,7 @@ public class LoginWithGoogle : MonoBehaviour
             }
             else
             {
-                Credential credential = GoogleAuthProvider.GetCredential(((Task<GoogleSignInUser>)task).Result.IdToken, null);
+                Credential credential = GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
                 _auth.SignInWithCredentialAsync(credential).ContinueWith(authTask =>
                 {
                     if (authTask.IsCanceled)
@@ -205,7 +201,7 @@ public class LoginWithGoogle : MonoBehaviour
                     }
                     else
                     {
-                        signInCompleted.SetResult(((Task<FirebaseUser>)authTask).Result);
+                        signInCompleted.SetResult(authTask.Result);
                         Debug.Log("Success");
                         isSigningIn = false;
                         user = _auth.CurrentUser;
@@ -221,7 +217,7 @@ public class LoginWithGoogle : MonoBehaviour
     public void Logout()
     {
         # if UNITY_EDITOR
-        // В редакторе просто вызываем успешный выход
+
         user = null;
         isSigningIn = false;
         #else
@@ -260,18 +256,12 @@ public class LoginWithGoogle : MonoBehaviour
             User currentUser = PlayerManager.Instance.CurrentUser;
         }
     }
-
-    /// <summary>
-    /// Получает текущего Firebase пользователя
-    /// </summary>
+    
     public FirebaseUser GetCurrentFirebaseUser()
     {
         return user;
     }
-
-    /// <summary>
-    /// Проверяет, выполнен ли вход в Google
-    /// </summary>
+    
     public bool IsGoogleSignedIn()
     {
         return user != null;
@@ -281,7 +271,6 @@ public class LoginWithGoogle : MonoBehaviour
     #region Private Methods
     private void OnFirebaseAuthSuccess(string userId, string displayName)
     {
-        // Уведомляем PlayerManager о входе
         if (PlayerManager.Instance != null)
         {
             PlayerManager.Instance.OnGoogleLoginSuccess(
@@ -362,7 +351,6 @@ public class LoginWithGoogle : MonoBehaviour
     #endregion
 }
 
-// MainThreadDispatcher для выполнения кода в главном потоке
 public class MainThreadDispatcher : MonoBehaviour
 {
     public static MainThreadDispatcher Instance { get; private set; }
@@ -392,7 +380,7 @@ public class MainThreadDispatcher : MonoBehaviour
         }
     }
 
-    public void Enqueue(System.Action action)
+    public void Enqueue(Action action)
     {
         lock (_actions)
         {
