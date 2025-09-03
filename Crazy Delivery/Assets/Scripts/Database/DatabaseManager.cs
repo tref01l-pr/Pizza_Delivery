@@ -15,6 +15,7 @@ public class DatabaseManager : MonoBehaviour
     private DatabaseReference _databaseReference;
     private bool _isFirebaseReady = false;
     private bool _isFirebaseAvailable = false;
+    private List<User> _leaderboardCache = new List<User>();
 
     [Header("UI References (Optional)")]
     public TMP_InputField NameInputField;
@@ -31,6 +32,7 @@ public class DatabaseManager : MonoBehaviour
     // Properties
     public bool IsFirebaseReady => _isFirebaseReady && _isFirebaseAvailable;
     public bool IsFirebaseAvailable => _isFirebaseAvailable;
+    public List<User> LeaderboardCache => _leaderboardCache;
 
     void Awake()
     {
@@ -395,6 +397,7 @@ public class DatabaseManager : MonoBehaviour
         }
 
         Debug.Log($"Leaderboard loaded: {leaderboard.Count} entries");
+        _leaderboardCache = leaderboard;
         OnLeaderboardLoaded?.Invoke(leaderboard);
     }
     #endregion
@@ -501,4 +504,19 @@ public class DatabaseManager : MonoBehaviour
         Debug.Log($"===============================");
     }
     #endregion
+    
+    public void DestroyInstance()
+    {
+        if (Instance != null)
+        {
+            
+            if (Instance.gameObject != null)
+            {
+                Destroy(Instance.gameObject);
+            }
+            
+            Instance = null;
+            Debug.Log("DatabaseManager instance destroyed");
+        }
+    }
 }

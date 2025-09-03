@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,12 +13,20 @@ namespace UIScripts
         private bool _isLoaded = false;
         
         [SerializeField]
-        public bool _persistBetweenScenes = true;
-
+        private bool _persistBetweenScenes = true;
+        
         private void SetLoadingCanvas(bool isLoading)
         {
             _isLoaded = !isLoading;
-            _loadingCanvas.gameObject.SetActive(isLoading);
+            try
+            {
+                _loadingCanvas.gameObject.SetActive(isLoading);
+                
+            }
+            catch (Exception e)
+            {
+                Destroy(gameObject);
+            }
         }
         
         void Awake()
@@ -27,7 +36,7 @@ namespace UIScripts
                 DontDestroyOnLoad(gameObject);
             }
         }
-        
+
         public void ShowLoadingScreen()
         {
             SetLoadingCanvas(true);

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,19 @@ public class MainMenu : MonoBehaviour
         loginMenuUI.SetActive(false);
         mainMenuUI.SetActive(true);
     }
+
+    public void Awake()
+    {
+        if (PlayerManager.Instance != null)
+        {
+            PlayerManager.Instance.SetMainMenu(this);
+        }
+    }
+
+    public void Login()
+    {
+        LoginWithGoogle.Instance.Login();
+    }
     
     public void PlayGame()
     {
@@ -30,6 +44,5 @@ public class MainMenu : MonoBehaviour
     public void Logout()
     {
         PlayerManager.Instance.LogoutPlayer();
-        ShowLoginMenu();
     }
 }

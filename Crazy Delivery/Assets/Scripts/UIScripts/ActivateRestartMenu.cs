@@ -7,6 +7,7 @@ public class ActivateRestartMenu : MonoBehaviour
 {
     [SerializeField] private RB_Controller _rbController;
     [SerializeField] private ScoreManager _scoreManager;
+    [SerializeField] private LeaderBoard _leaderBoard;
     
     [SerializeField] private Canvas _playerHood;
     [SerializeField] private Canvas _restartMenu;
@@ -30,6 +31,7 @@ public class ActivateRestartMenu : MonoBehaviour
             _restartMenu.enabled = true;
             _scoreOnRestartMenu.text = _scoreManager.Score.ToString();
             SavingHighScore();
+            
         }
     }
     
@@ -45,6 +47,7 @@ public class ActivateRestartMenu : MonoBehaviour
                 Debug.Log($"New high score: {_scoreManager.Score}!");
                 _highScore.text = _scoreManager.Score.ToString();
             }
+            _leaderBoard.InitializeLeaderboard(currentBestScore);
         }
         else
         {

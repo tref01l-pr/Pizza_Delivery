@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using UIScripts;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -370,24 +371,87 @@ public class PlayerManager : MonoBehaviour
     /// </summary>
     public void LogoutPlayer()
     {
-        Debug.Log("Logging out player");
-        
-        // Очищаем сохраненные данные
-        ClearPlayerPrefs();
+        StartCoroutine(LogoutCoroutine());
+    }
 
-        // Очищаем текущие данные
+    private IEnumerator LogoutCoroutine()
+    {
+        Debug.Log("Starting logout process");
+    
+        // Отключаем DontDestroyOnLoad ПЕРЕД удалением
+        //DisablePersistence();
+    
+        // Очищаем данные
+        ClearPlayerPrefs();
         currentUser = null;
         currentGoogleId = string.Empty;
         hasUnsyncedData = false;
         SetLoginState(false);
 
-        // Выходим из Google
         if (loginWithGoogle != null)
         {
             loginWithGoogle.Logout();
         }
+        
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            if (loginWithGoogle != null)
+            {
+                LoginWithGoogle.DestroyInstance();
+            }
+    
+            if (databaseManager != null)
+            {
+                databaseManager.DestroyInstance();
+            }
 
+            if (loadingScreenManager != null)
+            {
+                Destroy(loadingScreenManager.gameObject);
+            }
+        }
+    
         OnPlayerLoggedOut?.Invoke();
+    
+        // Ждем один кадр, чтобы Destroy() успел сработать
+        yield return null;
+    
+        // Теперь удаляем себя
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            DestroyInstance();
+        }
+    
+        // Еще одна задержка перед загрузкой сцены
+        yield return null;
+    
+        // Теперь безопасно загружать сцену
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            mainMenu?.ShowLoginMenu();
+        }
+
+    }
+
+    public static void DestroyInstance()
+    {
+        if (Instance != null)
+        {
+            Instance.UnsubscribeFromEvents();
+            Instance.ClearPlayerPrefs();
+        
+            if (Instance.gameObject != null)
+            {
+                Destroy(Instance.gameObject);
+            }
+        
+            Instance = null;
+            Debug.Log("PlayerManager instance destroyed");
+        }
     }
 
     /// <summary>
@@ -642,4 +706,14 @@ public class PlayerManager : MonoBehaviour
         Debug.Log("Attempted to restore online mode (Debug)");
     }
     #endregion
+
+    public void SetMainMenu(MainMenu mainMenu1)
+    {
+        mainMenu = mainMenu1;
+    }
+
+    public void SetLoadingScreenManager(LoadingScreenManager loadingScreenManager1)
+    {
+        loadingScreenManager = loadingScreenManager1;
+    }
 }

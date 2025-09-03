@@ -14,7 +14,7 @@ public class LoginWithGoogle : MonoBehaviour
     public string GoogleAPI = "570130608032-gibhr7rvtn0aq6c9g2s28444i869lqia.apps.googleusercontent.com";
     private GoogleSignInConfiguration configuration;
 
-    FirebaseAuth auth;
+    private FirebaseAuth _auth;
     FirebaseUser user;
 
     [Header("Persistence Settings")]
@@ -64,7 +64,7 @@ public class LoginWithGoogle : MonoBehaviour
 
     void InitFirebase()
     {
-        auth = FirebaseAuth.DefaultInstance;
+        _auth = FirebaseAuth.DefaultInstance;
     }
 
     #region PlayerManager Integration
@@ -120,34 +120,34 @@ public class LoginWithGoogle : MonoBehaviour
     #endregion
 
     #region Public Methods
-public void Login()
-{
-    if (isSigningIn)
+    public void Login()
     {
-        Debug.Log("Already signing in...");
-        return;
-    }
+        if (isSigningIn)
+        {
+            Debug.Log("Already signing in...");
+            return;
+        }
 
-    try
-    {
-        LoadingPanel.ShowLoadingScreen();
-        isSigningIn = true;
+        try
+        {
+            LoadingPanel.ShowLoadingScreen();
+            isSigningIn = true;
 
 #if UNITY_EDITOR
         // В редакторе сразу вызываем успешную авторизацию
-        isSigningIn = false;
-        OnFirebaseAuthSuccess("editor_user_id", "Editor User");
+            isSigningIn = false;
+            OnFirebaseAuthSuccess("editor_user_id", "Editor User");
 #else
-        // Выполняем реальную авторизацию Google
-        PerformRealGoogleSignIn();
+            // Выполняем реальную авторизацию Google
+            PerformRealGoogleSignIn();
 #endif
-    }
-    catch (Exception e)
-    {
-        Debug.LogError($"Login failed with exception: {e.Message}");
-        LoadingPanel.HideLoadingScreen();
-        isSigningIn = false;
-    }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Login failed with exception: {e.Message}");
+            LoadingPanel.HideLoadingScreen();
+            isSigningIn = false;
+        }
 }
 
     private void PerformRealGoogleSignIn()
@@ -190,7 +190,7 @@ public void Login()
             else
             {
                 Credential credential = GoogleAuthProvider.GetCredential(((Task<GoogleSignInUser>)task).Result.IdToken, null);
-                auth.SignInWithCredentialAsync(credential).ContinueWith(authTask =>
+                _auth.SignInWithCredentialAsync(credential).ContinueWith(authTask =>
                 {
                     if (authTask.IsCanceled)
                     {
@@ -208,7 +208,7 @@ public void Login()
                         signInCompleted.SetResult(((Task<FirebaseUser>)authTask).Result);
                         Debug.Log("Success");
                         isSigningIn = false;
-                        user = auth.CurrentUser;
+                        user = _auth.CurrentUser;
                         OnFirebaseAuthSuccess(user.UserId, user.DisplayName);
 
                         StartCoroutine(LoadImage(CheckImageUrl(user.PhotoUrl.ToString())));
@@ -220,16 +220,37 @@ public void Login()
 
     public void Logout()
     {
-        if (auth != null)
+        # if UNITY_EDITOR
+        // В редакторе просто вызываем успешный выход
+        user = null;
+        isSigningIn = false;
+        #else
+        
+        if (_auth != null)
         {
-            auth.SignOut();
+            _auth.SignOut();
         }
         
         GoogleSignIn.DefaultInstance.SignOut();
         
         user = null;
-        
+        isSigningIn = false;
         Debug.Log("User logged out");
+        #endif
+
+        
+    }
+    
+    public static void DestroyInstance()
+    {
+        if (Instance != null)
+        {
+            if (Instance.gameObject != null)
+            {
+                Destroy(Instance.gameObject);
+            }
+            Debug.Log("LoginWithGoogle instance destroyed");
+        }
     }
 
     public void GetInfo()
